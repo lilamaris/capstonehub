@@ -9,6 +9,8 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -16,20 +18,19 @@ class UpdateMajorService implements UpdateMajorUseCase {
     private final MajorPort majorPort;
 
     @Override
-    public MajorResponse update(UpdateMajorCommand command) {
-        Major major = Major.builder().
+    public Optional<MajorResponse> update(UpdateMajorCommand command) {
+        Major newMajor = Major.builder().
                 name(command.name())
                 .effectiveStartDate(command.effectiveStartDate())
                 .effectiveEndDate(command.effectiveEndDate())
                 .build();
 
-        Major updatedMajor = majorPort.update(command.id(), major).orElseThrow(Exception::new);
-
-        return MajorResponse.builder()
-                .id(updatedMajor.id().value())
-                .name(updatedMajor.name())
-                .effectiveStartDate(updatedMajor.effectiveStartDate())
-                .effectiveEndDate(updatedMajor.effectiveEndDate())
-                .build();
+        return majorPort.update(command.id(), newMajor)
+                .map(major ->MajorResponse.builder()
+                        .id(major.id().value())
+                        .name(major.name())
+                        .effectiveStartDate(major.effectiveStartDate())
+                        .effectiveEndDate(major.effectiveEndDate())
+                        .build());
     }
 }

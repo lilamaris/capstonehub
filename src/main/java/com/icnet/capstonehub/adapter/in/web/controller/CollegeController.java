@@ -41,12 +41,8 @@ class CollegeController {
                 .effectiveStartDate(updateCollegeRequest.effectiveStartDate())
                 .effectiveEndDate(updateCollegeRequest.effectiveEndDate())
                 .build();
-        try {
-            CollegeResponse collegeResponse = updateCollegeUseCase.update(collegeCommand);
-            return ResponseEntity.ok(collegeResponse);
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
-        }
+
+        return updateCollegeUseCase.update(collegeCommand).map(ResponseEntity::ok).orElse(ResponseEntity.badRequest().build());
     }
 
     @DeleteMapping("/{id}")
@@ -63,11 +59,6 @@ class CollegeController {
 
     @GetMapping("/{id}")
     public ResponseEntity<CollegeResponse> findCollegeById(@PathVariable("id") Long id) {
-        try {
-            CollegeResponse collegeResponse = findCollegeUseCase.byId(id);
-            return ResponseEntity.ok(collegeResponse);
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
-        }
+        return findCollegeUseCase.byId(id).map(ResponseEntity::ok).orElse(ResponseEntity.badRequest().build());
     }
 }

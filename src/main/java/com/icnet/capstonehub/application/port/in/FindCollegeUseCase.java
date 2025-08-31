@@ -2,8 +2,8 @@ package com.icnet.capstonehub.application.port.in;
 
 import com.icnet.capstonehub.application.port.in.response.CollegeResponse;
 
-import java.util.List;
+import java.util.Optional;
 
 public interface FindCollegeUseCase {
-    CollegeResponse byId(Long id) throws Exception;
+    Optional<CollegeResponse> byId(Long id);
 }

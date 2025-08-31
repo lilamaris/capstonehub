@@ -41,12 +41,8 @@ class MajorController {
                 .effectiveStartDate(updateMajorRequest.effectiveStartDate())
                 .effectiveEndDate(updateMajorRequest.effectiveEndDate())
                 .build();
-        try {
-            MajorResponse majorResponse = updateMajorUseCase.update(majorCommand);
-            return ResponseEntity.ok(majorResponse);
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
-        }
+
+        return updateMajorUseCase.update(majorCommand).map(ResponseEntity::ok).orElse(ResponseEntity.badRequest().build());
     }
 
     @DeleteMapping("/{id}")
@@ -63,11 +59,6 @@ class MajorController {
 
     @GetMapping("/{id}")
     public ResponseEntity<MajorResponse> findMajorById(@PathVariable("id") Long id) {
-        try {
-            MajorResponse majorResponse = findMajorUseCase.byId(id);
-            return ResponseEntity.ok(majorResponse);
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
-        }
+        return findMajorUseCase.byId(id).map(ResponseEntity::ok).orElse(ResponseEntity.badRequest().build());
     }
 }

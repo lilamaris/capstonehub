@@ -2,8 +2,8 @@ package com.icnet.capstonehub.application.port.in;
 
 import com.icnet.capstonehub.application.port.in.response.MajorResponse;
 
-import java.util.List;
+import java.util.Optional;
 
 public interface FindMajorUseCase {
-    MajorResponse byId(Long id);
+    Optional<MajorResponse> byId(Long id);
 }

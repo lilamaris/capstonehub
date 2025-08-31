@@ -8,6 +8,8 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -15,14 +17,14 @@ class FindMajorService implements FindMajorUseCase {
     private final MajorPort majorPort;
 
     @Override
-    public MajorResponse byId(Long id) {
-        Major found = majorPort.findById(id).orElseThrow(Exception::new);
+    public Optional<MajorResponse> byId(Long id) {
+        return majorPort.findById(id)
+                .map(major -> MajorResponse.builder()
+                        .id(major.id().value())
+                        .name(major.name())
+                        .effectiveStartDate(major.effectiveStartDate())
+                        .effectiveEndDate(major.effectiveEndDate())
+                        .build());
 
-        return MajorResponse.builder()
-                .id(found.id().value())
-                .name(found.name())
-                .effectiveStartDate(found.effectiveStartDate())
-                .effectiveEndDate(found.effectiveEndDate())
-                .build();
     }
 }

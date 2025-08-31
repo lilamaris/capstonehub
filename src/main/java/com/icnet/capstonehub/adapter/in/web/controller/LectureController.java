@@ -41,12 +41,8 @@ class LectureController {
                 .effectiveStartDate(updateLectureRequest.effectiveStartDate())
                 .effectiveEndDate(updateLectureRequest.effectiveEndDate())
                 .build();
-        try {
-            LectureResponse lectureResponse = updateLectureUseCase.update(lectureCommand);
-            return ResponseEntity.ok(lectureResponse);
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
-        }
+
+        return updateLectureUseCase.update(lectureCommand).map(ResponseEntity::ok).orElse(ResponseEntity.badRequest().build());
     }
 
     @DeleteMapping("/{id}")
@@ -63,11 +59,6 @@ class LectureController {
 
     @GetMapping("/{id}")
     public ResponseEntity<LectureResponse> findLectureById(@PathVariable("id") Long id) {
-        try {
-            LectureResponse lectureResponse = findLectureUseCase.byId(id);
-            return ResponseEntity.ok(lectureResponse);
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
-        }
+        return findLectureUseCase.byId(id).map(ResponseEntity::ok).orElse(ResponseEntity.badRequest().build());
     }
 }
