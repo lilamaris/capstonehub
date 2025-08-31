@@ -1,16 +1,14 @@
 package com.icnet.capstonehub.adapter.out.persistence.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDate;
 
 @Entity
 @Table(name = "major")
 @Getter
+@Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
