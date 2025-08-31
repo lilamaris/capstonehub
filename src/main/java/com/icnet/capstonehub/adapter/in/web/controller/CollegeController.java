@@ -1,6 +1,7 @@
 package com.icnet.capstonehub.adapter.in.web.controller;
 
 import com.icnet.capstonehub.adapter.in.web.dto.CreateCollegeRequest;
+import com.icnet.capstonehub.adapter.in.web.dto.UpdateCollegeRequest;
 import com.icnet.capstonehub.application.port.in.CollegeUseCase;
 import com.icnet.capstonehub.application.port.in.command.CreateCollegeCommand;
 import com.icnet.capstonehub.application.port.in.command.UpdateCollegeCommand;
@@ -29,12 +30,12 @@ class CollegeController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<CollegeResponse> updateCollege(@RequestBody UpdateCollegeCommand updateCollegeCommand, @PathVariable("id") Long id) {
+    public ResponseEntity<CollegeResponse> updateCollege(@RequestBody UpdateCollegeRequest updateCollegeRequest, @PathVariable("id") Long id) {
         UpdateCollegeCommand collegeCommand = UpdateCollegeCommand.builder()
                 .id(id)
-                .name(updateCollegeCommand.name())
-                .effectiveStartDate(updateCollegeCommand.effectiveStartDate())
-                .effectiveEndDate(updateCollegeCommand.effectiveEndDate())
+                .name(updateCollegeRequest.name())
+                .effectiveStartDate(updateCollegeRequest.effectiveStartDate())
+                .effectiveEndDate(updateCollegeRequest.effectiveEndDate())
                 .build();
         try {
             CollegeResponse collegeResponse = collegeUseCase.updateCollege(collegeCommand);
