@@ -6,10 +6,6 @@ import com.icnet.capstonehub.application.port.in.response.MajorResponse;
 
 import java.util.List;
 
-public interface MajorUseCase {
-    MajorResponse createMajor(CreateMajorCommand command);
-    MajorResponse updateMajor(UpdateMajorCommand command) throws Exception;
-    MajorResponse findMajorById(Long id) throws Exception;
-    List<MajorResponse> findMajor();
-    void deleteMajor(Long id);
+public interface DeleteMajorUseCase {
+    void byId(Long id);
 }

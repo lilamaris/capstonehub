@@ -2,7 +2,7 @@ package com.icnet.capstonehub.adapter.in.web.controller;
 
 import com.icnet.capstonehub.adapter.in.web.dto.CreateCollegeRequest;
 import com.icnet.capstonehub.adapter.in.web.dto.UpdateCollegeRequest;
-import com.icnet.capstonehub.application.port.in.CollegeUseCase;
+import com.icnet.capstonehub.application.port.in.*;
 import com.icnet.capstonehub.application.port.in.command.CreateCollegeCommand;
 import com.icnet.capstonehub.application.port.in.command.UpdateCollegeCommand;
 import com.icnet.capstonehub.application.port.in.response.CollegeResponse;
@@ -16,7 +16,11 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/college")
 class CollegeController {
-    private final CollegeUseCase collegeUseCase;
+    private final CreateCollegeUseCase createCollegeUseCase;
+    private final UpdateCollegeUseCase updateCollegeUseCase;
+    private final FindAllCollegeUseCase findAllCollegeUseCase;
+    private final FindCollegeUseCase findCollegeUseCase;
+    private final DeleteCollegeUseCase deleteCollegeUseCase;
 
     @PostMapping
     public ResponseEntity<CollegeResponse> createCollege(@RequestBody CreateCollegeRequest createCollegeRequest) {
@@ -25,7 +29,7 @@ class CollegeController {
                 .effectiveStartDate(createCollegeRequest.effectiveStartDate())
                 .effectiveEndDate(createCollegeRequest.effectiveEndDate())
                 .build();
-        CollegeResponse collegeResponse = collegeUseCase.createCollege(collegeCommand);
+        CollegeResponse collegeResponse = createCollegeUseCase.create(collegeCommand);
         return ResponseEntity.ok(collegeResponse);
     }
 
@@ -38,7 +42,7 @@ class CollegeController {
                 .effectiveEndDate(updateCollegeRequest.effectiveEndDate())
                 .build();
         try {
-            CollegeResponse collegeResponse = collegeUseCase.updateCollege(collegeCommand);
+            CollegeResponse collegeResponse = updateCollegeUseCase.update(collegeCommand);
             return ResponseEntity.ok(collegeResponse);
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
@@ -47,20 +51,20 @@ class CollegeController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteCollege(@PathVariable("id") Long id) {
-        collegeUseCase.deleteCollege(id);
+        deleteCollegeUseCase.byId(id);
         return ResponseEntity.ok().build();
     }
 
     @GetMapping()
     public ResponseEntity<List<CollegeResponse>> findCollege() {
-        List<CollegeResponse> collegeResponses = collegeUseCase.findCollege();
+        List<CollegeResponse> collegeResponses = findAllCollegeUseCase.find();
         return ResponseEntity.ok(collegeResponses);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<CollegeResponse> findCollegeById(@PathVariable("id") Long id) {
         try {
-            CollegeResponse collegeResponse = collegeUseCase.findCollegeById(id);
+            CollegeResponse collegeResponse = findCollegeUseCase.byId(id);
             return ResponseEntity.ok(collegeResponse);
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();

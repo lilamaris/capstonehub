@@ -2,7 +2,7 @@ package com.icnet.capstonehub.adapter.in.web.controller;
 
 import com.icnet.capstonehub.adapter.in.web.dto.CreateMajorRequest;
 import com.icnet.capstonehub.adapter.in.web.dto.UpdateMajorRequest;
-import com.icnet.capstonehub.application.port.in.MajorUseCase;
+import com.icnet.capstonehub.application.port.in.*;
 import com.icnet.capstonehub.application.port.in.command.CreateMajorCommand;
 import com.icnet.capstonehub.application.port.in.command.UpdateMajorCommand;
 import com.icnet.capstonehub.application.port.in.response.MajorResponse;
@@ -16,7 +16,11 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/major")
 class MajorController {
-    private final MajorUseCase majorUseCase;
+    private final CreateMajorUseCase createMajorUseCase;
+    private final UpdateMajorUseCase updateMajorUseCase;
+    private final FindAllMajorUseCase findAllMajorUseCase;
+    private final FindMajorUseCase findMajorUseCase;
+    private final DeleteMajorUseCase deleteMajorUseCase;
 
     @PostMapping
     public ResponseEntity<MajorResponse> createMajor(@RequestBody CreateMajorRequest createMajorRequest) {
@@ -25,7 +29,7 @@ class MajorController {
                 .effectiveStartDate(createMajorRequest.effectiveStartDate())
                 .effectiveEndDate(createMajorRequest.effectiveEndDate())
                 .build();
-        MajorResponse majorResponse = majorUseCase.createMajor(majorCommand);
+        MajorResponse majorResponse = createMajorUseCase.create(majorCommand);
         return ResponseEntity.ok(majorResponse);
     }
 
@@ -38,7 +42,7 @@ class MajorController {
                 .effectiveEndDate(updateMajorRequest.effectiveEndDate())
                 .build();
         try {
-            MajorResponse majorResponse = majorUseCase.updateMajor(majorCommand);
+            MajorResponse majorResponse = updateMajorUseCase.update(majorCommand);
             return ResponseEntity.ok(majorResponse);
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
@@ -47,20 +51,20 @@ class MajorController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteMajor(@PathVariable("id") Long id) {
-        majorUseCase.deleteMajor(id);
+        deleteMajorUseCase.byId(id);
         return ResponseEntity.ok().build();
     }
 
     @GetMapping()
     public ResponseEntity<List<MajorResponse>> findMajor() {
-        List<MajorResponse> majorResponses = majorUseCase.findMajor();
+        List<MajorResponse> majorResponses = findAllMajorUseCase.find();
         return ResponseEntity.ok(majorResponses);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<MajorResponse> findMajorById(@PathVariable("id") Long id) {
         try {
-            MajorResponse majorResponse = majorUseCase.findMajorById(id);
+            MajorResponse majorResponse = findMajorUseCase.byId(id);
             return ResponseEntity.ok(majorResponse);
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
