@@ -1,6 +1,5 @@
 package com.icnet.capstonehub.application.port.in.response;
 
-import com.icnet.capstonehub.domain.College;
 import lombok.Builder;
 
 import java.time.LocalDate;
