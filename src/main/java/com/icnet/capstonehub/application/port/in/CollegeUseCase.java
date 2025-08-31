@@ -11,4 +11,5 @@ public interface CollegeUseCase {
     CollegeResponse updateCollege(UpdateCollegeCommand command) throws Exception;
     CollegeResponse findCollegeById(Long id) throws Exception;
     List<CollegeResponse> findCollege();
+    void deleteCollege(Long id);
 }

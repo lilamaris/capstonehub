@@ -11,7 +11,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -80,4 +79,8 @@ class CollegeService implements CollegeUseCase {
                         .build()).toList();
     }
 
+    @Override
+    public void deleteCollege(Long id) {
+        collegePort.delete(id);
+    }
 }

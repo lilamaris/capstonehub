@@ -44,6 +44,12 @@ class CollegeController {
         }
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteCollege(@PathVariable("id") Long id) {
+        collegeUseCase.deleteCollege(id);
+        return ResponseEntity.ok().build();
+    }
+
     @GetMapping()
     public ResponseEntity<List<CollegeResponse>> findCollege() {
         List<CollegeResponse> collegeResponses = collegeUseCase.findCollege();
