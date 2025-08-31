@@ -5,7 +5,7 @@ import lombok.Builder;
 import java.time.LocalDate;
 
 @Builder
-public record CreateCollegeResponse(
+public record CollegeResponse(
         Long id,
         String name,
         LocalDate effectiveStartDate,

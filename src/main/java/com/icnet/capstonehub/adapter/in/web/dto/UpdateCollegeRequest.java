@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 
 import java.time.LocalDate;
 
-public record CreateCollegeRequest(
+public record UpdateCollegeRequest(
         @NotBlank String name,
         @NotBlank LocalDate effectiveStartDate,
         @Nullable LocalDate effectiveEndDate

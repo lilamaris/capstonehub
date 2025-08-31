@@ -9,6 +9,7 @@ import java.util.List;
 @Entity
 @Table(name = "college")
 @Getter
+@Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
