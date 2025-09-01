@@ -16,11 +16,18 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/college")
 class CollegeController {
-    private final CreateCollegeUseCase createCollegeUseCase;
-    private final UpdateCollegeUseCase updateCollegeUseCase;
-    private final FindAllCollegeUseCase findAllCollegeUseCase;
-    private final FindCollegeUseCase findCollegeUseCase;
-    private final DeleteCollegeUseCase deleteCollegeUseCase;
+    private final ManageCollegeUseCase manageCollegeUseCase;
+
+    @GetMapping()
+    public ResponseEntity<List<CollegeResponse>> findCollege() {
+        List<CollegeResponse> collegeResponses = manageCollegeUseCase.findAll();
+        return ResponseEntity.ok(collegeResponses);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<CollegeResponse> findCollegeById(@PathVariable("id") Long id) {
+        return manageCollegeUseCase.findById(id).map(ResponseEntity::ok).orElse(ResponseEntity.badRequest().build());
+    }
 
     @PostMapping
     public ResponseEntity<CollegeResponse> createCollege(@RequestBody CreateCollegeRequest createCollegeRequest) {
@@ -29,7 +36,7 @@ class CollegeController {
                 .effectiveStartDate(createCollegeRequest.effectiveStartDate())
                 .effectiveEndDate(createCollegeRequest.effectiveEndDate())
                 .build();
-        CollegeResponse collegeResponse = createCollegeUseCase.create(collegeCommand);
+        CollegeResponse collegeResponse = manageCollegeUseCase.create(collegeCommand);
         return ResponseEntity.ok(collegeResponse);
     }
 
@@ -42,23 +49,12 @@ class CollegeController {
                 .effectiveEndDate(updateCollegeRequest.effectiveEndDate())
                 .build();
 
-        return updateCollegeUseCase.update(collegeCommand).map(ResponseEntity::ok).orElse(ResponseEntity.badRequest().build());
+        return manageCollegeUseCase.update(collegeCommand).map(ResponseEntity::ok).orElse(ResponseEntity.badRequest().build());
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteCollege(@PathVariable("id") Long id) {
-        deleteCollegeUseCase.byId(id);
+        manageCollegeUseCase.deleteById(id);
         return ResponseEntity.ok().build();
-    }
-
-    @GetMapping()
-    public ResponseEntity<List<CollegeResponse>> findCollege() {
-        List<CollegeResponse> collegeResponses = findAllCollegeUseCase.find();
-        return ResponseEntity.ok(collegeResponses);
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<CollegeResponse> findCollegeById(@PathVariable("id") Long id) {
-        return findCollegeUseCase.byId(id).map(ResponseEntity::ok).orElse(ResponseEntity.badRequest().build());
     }
 }

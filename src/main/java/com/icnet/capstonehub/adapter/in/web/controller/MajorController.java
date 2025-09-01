@@ -16,11 +16,18 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/major")
 class MajorController {
-    private final CreateMajorUseCase createMajorUseCase;
-    private final UpdateMajorUseCase updateMajorUseCase;
-    private final FindAllMajorUseCase findAllMajorUseCase;
-    private final FindMajorUseCase findMajorUseCase;
-    private final DeleteMajorUseCase deleteMajorUseCase;
+    private final ManageMajorUseCase manageMajorUseCase;
+
+    @GetMapping()
+    public ResponseEntity<List<MajorResponse>> findMajor() {
+        List<MajorResponse> majorResponses = manageMajorUseCase.findAll();
+        return ResponseEntity.ok(majorResponses);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<MajorResponse> findMajorById(@PathVariable("id") Long id) {
+        return manageMajorUseCase.findById(id).map(ResponseEntity::ok).orElse(ResponseEntity.badRequest().build());
+    }
 
     @PostMapping
     public ResponseEntity<MajorResponse> createMajor(@RequestBody CreateMajorRequest createMajorRequest) {
@@ -29,7 +36,7 @@ class MajorController {
                 .effectiveStartDate(createMajorRequest.effectiveStartDate())
                 .effectiveEndDate(createMajorRequest.effectiveEndDate())
                 .build();
-        MajorResponse majorResponse = createMajorUseCase.create(majorCommand);
+        MajorResponse majorResponse = manageMajorUseCase.create(majorCommand);
         return ResponseEntity.ok(majorResponse);
     }
 
@@ -42,23 +49,12 @@ class MajorController {
                 .effectiveEndDate(updateMajorRequest.effectiveEndDate())
                 .build();
 
-        return updateMajorUseCase.update(majorCommand).map(ResponseEntity::ok).orElse(ResponseEntity.badRequest().build());
+        return manageMajorUseCase.update(majorCommand).map(ResponseEntity::ok).orElse(ResponseEntity.badRequest().build());
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteMajor(@PathVariable("id") Long id) {
-        deleteMajorUseCase.byId(id);
+        manageMajorUseCase.deleteById(id);
         return ResponseEntity.ok().build();
-    }
-
-    @GetMapping()
-    public ResponseEntity<List<MajorResponse>> findMajor() {
-        List<MajorResponse> majorResponses = findAllMajorUseCase.find();
-        return ResponseEntity.ok(majorResponses);
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<MajorResponse> findMajorById(@PathVariable("id") Long id) {
-        return findMajorUseCase.byId(id).map(ResponseEntity::ok).orElse(ResponseEntity.badRequest().build());
     }
 }

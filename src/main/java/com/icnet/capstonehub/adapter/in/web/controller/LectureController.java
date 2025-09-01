@@ -16,11 +16,18 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/lecture")
 class LectureController {
-    private final CreateLectureUseCase createLectureUseCase;
-    private final UpdateLectureUseCase updateLectureUseCase;
-    private final FindAllLectureUseCase findAllLectureUseCase;
-    private final FindLectureUseCase findLectureUseCase;
-    private final DeleteLectureUseCase deleteLectureUseCase;
+    private final ManageLectureUseCase manageLectureUseCase;
+
+    @GetMapping()
+    public ResponseEntity<List<LectureResponse>> findLecture() {
+        List<LectureResponse> lectureResponses = manageLectureUseCase.findAll();
+        return ResponseEntity.ok(lectureResponses);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<LectureResponse> findLectureById(@PathVariable("id") Long id) {
+        return manageLectureUseCase.findById(id).map(ResponseEntity::ok).orElse(ResponseEntity.badRequest().build());
+    }
 
     @PostMapping
     public ResponseEntity<LectureResponse> createLecture(@RequestBody CreateLectureRequest createLectureRequest) {
@@ -29,7 +36,7 @@ class LectureController {
                 .effectiveStartDate(createLectureRequest.effectiveStartDate())
                 .effectiveEndDate(createLectureRequest.effectiveEndDate())
                 .build();
-        LectureResponse lectureResponse = createLectureUseCase.create(createLectureCommand);
+        LectureResponse lectureResponse = manageLectureUseCase.create(createLectureCommand);
         return ResponseEntity.ok(lectureResponse);
     }
 
@@ -42,23 +49,12 @@ class LectureController {
                 .effectiveEndDate(updateLectureRequest.effectiveEndDate())
                 .build();
 
-        return updateLectureUseCase.update(lectureCommand).map(ResponseEntity::ok).orElse(ResponseEntity.badRequest().build());
+        return manageLectureUseCase.update(lectureCommand).map(ResponseEntity::ok).orElse(ResponseEntity.badRequest().build());
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteLecture(@PathVariable("id") Long id) {
-        deleteLectureUseCase.byId(id);
+        manageLectureUseCase.deleteById(id);
         return ResponseEntity.ok().build();
-    }
-
-    @GetMapping()
-    public ResponseEntity<List<LectureResponse>> findLecture() {
-        List<LectureResponse> lectureResponses = findAllLectureUseCase.find();
-        return ResponseEntity.ok(lectureResponses);
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<LectureResponse> findLectureById(@PathVariable("id") Long id) {
-        return findLectureUseCase.byId(id).map(ResponseEntity::ok).orElse(ResponseEntity.badRequest().build());
     }
 }
