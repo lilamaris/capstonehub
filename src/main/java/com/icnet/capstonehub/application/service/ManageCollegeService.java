@@ -5,7 +5,9 @@ import com.icnet.capstonehub.application.port.in.command.CreateCollegeCommand;
 import com.icnet.capstonehub.application.port.in.command.UpdateCollegeCommand;
 import com.icnet.capstonehub.application.port.in.response.CollegeResponse;
 import com.icnet.capstonehub.application.port.out.CollegePort;
+import com.icnet.capstonehub.application.port.out.mapper.CollegeMapper;
 import com.icnet.capstonehub.domain.College;
+import com.icnet.capstonehub.domain.common.EffectivePeriod;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,68 +20,41 @@ import java.util.Optional;
 @Transactional
 class ManageCollegeService implements ManageCollegeUseCase {
     private final CollegePort collegePort;
-
-    @Override
-    public List<CollegeResponse> findAll() {
-        List<College> found = collegePort.findAll();
-
-        return found.stream()
-                .map(college -> CollegeResponse.builder()
-                        .id(college.id().value())
-                        .name(college.name())
-                        .effectiveStartDate(college.effectiveStartDate())
-                        .effectiveEndDate(college.effectiveEndDate())
-                        .build()).toList();
-    }
-
-    @Override
-    public Optional<CollegeResponse> findById(Long id) {
-        return collegePort.findById(id)
-                .map(college -> CollegeResponse.builder()
-                        .id(college.id().value())
-                        .name(college.name())
-                        .effectiveStartDate(college.effectiveStartDate())
-                        .effectiveEndDate(college.effectiveEndDate())
-                        .build());
-    }
+    private final CollegeMapper collegeMapper;
 
     @Override
     public CollegeResponse create(CreateCollegeCommand command) {
         College college = College.builder().
                 name(command.name())
-                .effectiveStartDate(command.effectiveStartDate())
-                .effectiveEndDate(command.effectiveEndDate())
+                .effective(new EffectivePeriod(command.effectiveStartDate(), command.effectiveEndDate()))
                 .build();
 
-        College createdCollege = collegePort.create(college);
-
-        return CollegeResponse.builder()
-                .id(createdCollege.id().value())
-                .name(createdCollege.name())
-                .effectiveStartDate(createdCollege.effectiveStartDate())
-                .effectiveEndDate(createdCollege.effectiveEndDate())
-                .build();
+        return collegeMapper.toResponse(collegePort.create(college));
     }
 
     @Override
-    public Optional<CollegeResponse> update(UpdateCollegeCommand command) {
-        College newCollege = College.builder().
+    public CollegeResponse update(UpdateCollegeCommand command) {
+        College college = College.builder().
                 name(command.name())
-                .effectiveStartDate(command.effectiveStartDate())
-                .effectiveEndDate(command.effectiveEndDate())
+                .effective(new EffectivePeriod(command.effectiveStartDate(), command.effectiveEndDate()))
                 .build();
 
-        return collegePort.update(command.id(), newCollege)
-                .map(college -> CollegeResponse.builder()
-                        .id(college.id().value())
-                        .name(college.name())
-                        .effectiveStartDate(college.effectiveStartDate())
-                        .effectiveEndDate(college.effectiveEndDate())
-                        .build());
+        return collegeMapper.toResponse(collegePort.update(command.id(), college));
     }
 
     @Override
     public void deleteById(Long id) {
         collegePort.delete(id);
+    }
+
+    @Override
+    public List<CollegeResponse> findAll() {
+        List<College> colleges = collegePort.findAll();
+        return colleges.stream().map(collegeMapper::toResponse).toList();
+    }
+
+    @Override
+    public Optional<CollegeResponse> findById(Long id) {
+        return collegePort.findById(id).map(collegeMapper::toResponse);
     }
 }

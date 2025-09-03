@@ -5,7 +5,9 @@ import com.icnet.capstonehub.application.port.in.command.CreateMajorCommand;
 import com.icnet.capstonehub.application.port.in.command.UpdateMajorCommand;
 import com.icnet.capstonehub.application.port.in.response.MajorResponse;
 import com.icnet.capstonehub.application.port.out.MajorPort;
+import com.icnet.capstonehub.application.port.out.mapper.MajorMapper;
 import com.icnet.capstonehub.domain.Major;
+import com.icnet.capstonehub.domain.common.EffectivePeriod;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,68 +20,41 @@ import java.util.Optional;
 @Transactional
 class ManageMajorService implements ManageMajorUseCase {
     private final MajorPort majorPort;
-
-    @Override
-    public List<MajorResponse> findAll() {
-        List<Major> found = majorPort.findAll();
-
-        return found.stream()
-                .map(major -> MajorResponse.builder()
-                        .id(major.id().value())
-                        .name(major.name())
-                        .effectiveStartDate(major.effectiveStartDate())
-                        .effectiveEndDate(major.effectiveEndDate())
-                        .build()).toList();
-    }
-
-    @Override
-    public Optional<MajorResponse> findById(Long id) {
-        return majorPort.findById(id)
-                .map(major -> MajorResponse.builder()
-                        .id(major.id().value())
-                        .name(major.name())
-                        .effectiveStartDate(major.effectiveStartDate())
-                        .effectiveEndDate(major.effectiveEndDate())
-                        .build());
-    }
+    private final MajorMapper majorMapper;
 
     @Override
     public MajorResponse create(CreateMajorCommand command) {
         Major major = Major.builder().
                 name(command.name())
-                .effectiveStartDate(command.effectiveStartDate())
-                .effectiveEndDate(command.effectiveEndDate())
+                .effective(new EffectivePeriod(command.effectiveStartDate(), command.effectiveEndDate()))
                 .build();
 
-        Major createdMajor = majorPort.create(major);
-
-        return MajorResponse.builder()
-                .id(createdMajor.id().value())
-                .name(createdMajor.name())
-                .effectiveStartDate(createdMajor.effectiveStartDate())
-                .effectiveEndDate(createdMajor.effectiveEndDate())
-                .build();
+        return majorMapper.toResponse(majorPort.create(major));
     }
 
     @Override
-    public Optional<MajorResponse> update(UpdateMajorCommand command) {
-        Major newMajor = Major.builder().
+    public MajorResponse update(UpdateMajorCommand command) {
+        Major major = Major.builder().
                 name(command.name())
-                .effectiveStartDate(command.effectiveStartDate())
-                .effectiveEndDate(command.effectiveEndDate())
+                .effective(new EffectivePeriod(command.effectiveStartDate(), command.effectiveEndDate()))
                 .build();
 
-        return majorPort.update(command.id(), newMajor)
-                .map(major -> MajorResponse.builder()
-                        .id(major.id().value())
-                        .name(major.name())
-                        .effectiveStartDate(major.effectiveStartDate())
-                        .effectiveEndDate(major.effectiveEndDate())
-                        .build());
+        return majorMapper.toResponse(majorPort.update(command.id(), major));
     }
 
     @Override
     public void deleteById(Long id) {
         majorPort.delete(id);
+    }
+
+    @Override
+    public List<MajorResponse> findAll() {
+        List<Major> majors = majorPort.findAll();
+        return majors.stream().map(majorMapper::toResponse).toList();
+    }
+
+    @Override
+    public Optional<MajorResponse> findById(Long id) {
+        return majorPort.findById(id).map(majorMapper::toResponse);
     }
 }

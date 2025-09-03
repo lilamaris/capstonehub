@@ -6,9 +6,9 @@ import java.util.List;
 import java.util.Optional;
 
 public interface CollegePort {
-    College create(College college);
+    College create(College inDomain);
+    College update(Long id, College inDomain);
     List<College> findAll();
     Optional<College> findById(Long id);
-    Optional<College> update(Long id, College college);
     void delete(Long id);
 }

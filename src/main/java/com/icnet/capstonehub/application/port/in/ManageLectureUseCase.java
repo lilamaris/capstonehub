@@ -8,9 +8,9 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ManageLectureUseCase {
+    LectureResponse create(CreateLectureCommand command);
+    LectureResponse update(UpdateLectureCommand command);
+    void deleteById(Long id);
     Optional<LectureResponse> findById(Long id);
     List<LectureResponse> findAll();
-    LectureResponse create(CreateLectureCommand command);
-    Optional<LectureResponse> update(UpdateLectureCommand command);
-    void deleteById(Long id);
 }

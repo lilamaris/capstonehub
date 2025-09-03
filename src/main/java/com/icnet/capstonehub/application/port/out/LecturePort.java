@@ -6,9 +6,9 @@ import java.util.List;
 import java.util.Optional;
 
 public interface LecturePort {
-    Lecture create(Lecture lecture);
+    Lecture create(Lecture inDomain);
+    Lecture update(Long id, Lecture inDomain);
     List<Lecture> findAll();
     Optional<Lecture> findById(Long id);
-    Optional<Lecture> update(Long id, Lecture lecture);
     void delete(Long id);
 }

@@ -8,9 +8,9 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ManageCollegeUseCase {
+    CollegeResponse create(CreateCollegeCommand command);
+    CollegeResponse update(UpdateCollegeCommand command);
+    void deleteById(Long id);
     Optional<CollegeResponse> findById(Long id);
     List<CollegeResponse> findAll();
-    CollegeResponse create(CreateCollegeCommand command);
-    Optional<CollegeResponse> update(UpdateCollegeCommand command);
-    void deleteById(Long id);
 }
