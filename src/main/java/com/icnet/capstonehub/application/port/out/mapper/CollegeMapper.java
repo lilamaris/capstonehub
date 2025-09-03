@@ -1,7 +1,7 @@
 package com.icnet.capstonehub.application.port.out.mapper;
 
 import com.icnet.capstonehub.adapter.out.persistence.entity.CollegeEntity;
-import com.icnet.capstonehub.application.port.in.response.CollegeResponse;
+import com.icnet.capstonehub.application.port.out.response.CollegeResponse;
 import com.icnet.capstonehub.domain.College;
 import com.icnet.capstonehub.domain.common.EffectivePeriod;
 import org.springframework.stereotype.Component;

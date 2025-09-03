@@ -19,23 +19,24 @@ class CollegeController {
     private final ManageCollegeUseCase manageCollegeUseCase;
 
     @PostMapping
-    public ResponseEntity<CollegeResponse> createCollege(@RequestBody CreateCollegeRequest createCollegeRequest) {
+    public ResponseEntity<CollegeResponse> createCollege(@RequestBody CreateCollegeRequest request) {
         CreateCollegeCommand command = CreateCollegeCommand.builder()
-                .name(createCollegeRequest.name())
-                .effectiveStartDate(createCollegeRequest.effectiveStartDate())
-                .effectiveEndDate(createCollegeRequest.effectiveEndDate())
+                .name(request.name())
+                .effectiveStartDate(request.effectiveStartDate())
+                .effectiveEndDate(request.effectiveEndDate())
                 .build();
+
         CollegeResponse response = manageCollegeUseCase.create(command);
         return ResponseEntity.ok(response);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<CollegeResponse> updateCollege(@RequestBody UpdateCollegeRequest updateCollegeRequest, @PathVariable("id") Long id) {
+    public ResponseEntity<CollegeResponse> updateCollege(@RequestBody UpdateCollegeRequest request, @PathVariable("id") Long id) {
         UpdateCollegeCommand command = UpdateCollegeCommand.builder()
                 .id(id)
-                .name(updateCollegeRequest.name())
-                .effectiveStartDate(updateCollegeRequest.effectiveStartDate())
-                .effectiveEndDate(updateCollegeRequest.effectiveEndDate())
+                .name(request.name())
+                .effectiveStartDate(request.effectiveStartDate())
+                .effectiveEndDate(request.effectiveEndDate())
                 .build();
 
         CollegeResponse response = manageCollegeUseCase.update(command);

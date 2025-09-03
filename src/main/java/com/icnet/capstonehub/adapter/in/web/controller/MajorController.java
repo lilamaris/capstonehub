@@ -19,23 +19,24 @@ class MajorController {
     private final ManageMajorUseCase manageMajorUseCase;
 
     @PostMapping
-    public ResponseEntity<MajorResponse> createMajor(@RequestBody CreateMajorRequest createMajorRequest) {
+    public ResponseEntity<MajorResponse> createMajor(@RequestBody CreateMajorRequest request) {
         CreateMajorCommand command = CreateMajorCommand.builder()
-                .name(createMajorRequest.name())
-                .effectiveStartDate(createMajorRequest.effectiveStartDate())
-                .effectiveEndDate(createMajorRequest.effectiveEndDate())
+                .name(request.name())
+                .effectiveStartDate(request.effectiveStartDate())
+                .effectiveEndDate(request.effectiveEndDate())
                 .build();
+
         MajorResponse response = manageMajorUseCase.create(command);
         return ResponseEntity.ok(response);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<MajorResponse> updateMajor(@RequestBody UpdateMajorRequest updateMajorRequest, @PathVariable("id") Long id) {
+    public ResponseEntity<MajorResponse> updateMajor(@RequestBody UpdateMajorRequest request, @PathVariable("id") Long id) {
         UpdateMajorCommand command = UpdateMajorCommand.builder()
                 .id(id)
-                .name(updateMajorRequest.name())
-                .effectiveStartDate(updateMajorRequest.effectiveStartDate())
-                .effectiveEndDate(updateMajorRequest.effectiveEndDate())
+                .name(request.name())
+                .effectiveStartDate(request.effectiveStartDate())
+                .effectiveEndDate(request.effectiveEndDate())
                 .build();
 
         MajorResponse response = manageMajorUseCase.update(command);

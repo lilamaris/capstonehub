@@ -3,7 +3,7 @@ package com.icnet.capstonehub.application.service;
 import com.icnet.capstonehub.application.port.in.ManageCollegeUseCase;
 import com.icnet.capstonehub.application.port.in.command.CreateCollegeCommand;
 import com.icnet.capstonehub.application.port.in.command.UpdateCollegeCommand;
-import com.icnet.capstonehub.application.port.in.response.CollegeResponse;
+import com.icnet.capstonehub.application.port.out.response.CollegeResponse;
 import com.icnet.capstonehub.application.port.out.CollegePort;
 import com.icnet.capstonehub.application.port.out.mapper.CollegeMapper;
 import com.icnet.capstonehub.domain.College;

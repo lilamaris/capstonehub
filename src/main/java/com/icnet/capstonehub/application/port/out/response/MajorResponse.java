@@ -1,11 +1,11 @@
-package com.icnet.capstonehub.application.port.in.response;
+package com.icnet.capstonehub.application.port.out.response;
 
 import lombok.Builder;
 
 import java.time.LocalDate;
 
 @Builder
-public record CollegeResponse(
+public record MajorResponse(
         Long id,
         String name,
         LocalDate effectiveStartDate,

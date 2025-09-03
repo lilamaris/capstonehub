@@ -3,7 +3,7 @@ package com.icnet.capstonehub.application.service;
 import com.icnet.capstonehub.application.port.in.ManageMajorUseCase;
 import com.icnet.capstonehub.application.port.in.command.CreateMajorCommand;
 import com.icnet.capstonehub.application.port.in.command.UpdateMajorCommand;
-import com.icnet.capstonehub.application.port.in.response.MajorResponse;
+import com.icnet.capstonehub.application.port.out.response.MajorResponse;
 import com.icnet.capstonehub.application.port.out.MajorPort;
 import com.icnet.capstonehub.application.port.out.mapper.MajorMapper;
 import com.icnet.capstonehub.domain.Major;

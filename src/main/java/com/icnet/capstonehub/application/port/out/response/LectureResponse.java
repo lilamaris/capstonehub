@@ -1,4 +1,4 @@
-package com.icnet.capstonehub.application.port.in.response;
+package com.icnet.capstonehub.application.port.out.response;
 
 import lombok.Builder;
 

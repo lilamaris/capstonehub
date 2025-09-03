@@ -19,23 +19,24 @@ class LectureController {
     private final ManageLectureUseCase manageLectureUseCase;
 
     @PostMapping
-    public ResponseEntity<LectureResponse> createLecture(@RequestBody CreateLectureRequest createLectureRequest) {
+    public ResponseEntity<LectureResponse> createLecture(@RequestBody CreateLectureRequest request) {
         CreateLectureCommand command = CreateLectureCommand.builder()
-                .name(createLectureRequest.name())
-                .effectiveStartDate(createLectureRequest.effectiveStartDate())
-                .effectiveEndDate(createLectureRequest.effectiveEndDate())
+                .name(request.name())
+                .effectiveStartDate(request.effectiveStartDate())
+                .effectiveEndDate(request.effectiveEndDate())
                 .build();
+
         LectureResponse response = manageLectureUseCase.create(command);
         return ResponseEntity.ok(response);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<LectureResponse> updateLecture(@RequestBody UpdateLectureRequest updateLectureRequest, @PathVariable("id") Long id) {
+    public ResponseEntity<LectureResponse> updateLecture(@RequestBody UpdateLectureRequest request, @PathVariable("id") Long id) {
         UpdateLectureCommand command = UpdateLectureCommand.builder()
                 .id(id)
-                .name(updateLectureRequest.name())
-                .effectiveStartDate(updateLectureRequest.effectiveStartDate())
-                .effectiveEndDate(updateLectureRequest.effectiveEndDate())
+                .name(request.name())
+                .effectiveStartDate(request.effectiveStartDate())
+                .effectiveEndDate(request.effectiveEndDate())
                 .build();
 
         LectureResponse response = manageLectureUseCase.update(command);
