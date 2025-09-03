@@ -5,7 +5,7 @@ import com.icnet.capstonehub.adapter.in.web.dto.UpdateLectureRequest;
 import com.icnet.capstonehub.application.port.in.*;
 import com.icnet.capstonehub.application.port.in.command.CreateLectureCommand;
 import com.icnet.capstonehub.application.port.in.command.UpdateLectureCommand;
-import com.icnet.capstonehub.application.port.in.response.LectureResponse;
+import com.icnet.capstonehub.application.port.out.response.LectureResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,43 +18,44 @@ import java.util.List;
 class LectureController {
     private final ManageLectureUseCase manageLectureUseCase;
 
-    @GetMapping()
-    public ResponseEntity<List<LectureResponse>> findLecture() {
-        List<LectureResponse> lectureResponses = manageLectureUseCase.findAll();
-        return ResponseEntity.ok(lectureResponses);
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<LectureResponse> findLectureById(@PathVariable("id") Long id) {
-        return manageLectureUseCase.findById(id).map(ResponseEntity::ok).orElse(ResponseEntity.badRequest().build());
-    }
-
     @PostMapping
     public ResponseEntity<LectureResponse> createLecture(@RequestBody CreateLectureRequest createLectureRequest) {
-        CreateLectureCommand createLectureCommand = CreateLectureCommand.builder()
+        CreateLectureCommand command = CreateLectureCommand.builder()
                 .name(createLectureRequest.name())
                 .effectiveStartDate(createLectureRequest.effectiveStartDate())
                 .effectiveEndDate(createLectureRequest.effectiveEndDate())
                 .build();
-        LectureResponse lectureResponse = manageLectureUseCase.create(createLectureCommand);
-        return ResponseEntity.ok(lectureResponse);
+        LectureResponse response = manageLectureUseCase.create(command);
+        return ResponseEntity.ok(response);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<LectureResponse> updateLecture(@RequestBody UpdateLectureRequest updateLectureRequest, @PathVariable("id") Long id) {
-        UpdateLectureCommand lectureCommand = UpdateLectureCommand.builder()
+        UpdateLectureCommand command = UpdateLectureCommand.builder()
                 .id(id)
                 .name(updateLectureRequest.name())
                 .effectiveStartDate(updateLectureRequest.effectiveStartDate())
                 .effectiveEndDate(updateLectureRequest.effectiveEndDate())
                 .build();
 
-        return manageLectureUseCase.update(lectureCommand).map(ResponseEntity::ok).orElse(ResponseEntity.badRequest().build());
+        LectureResponse response = manageLectureUseCase.update(command);
+        return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteLecture(@PathVariable("id") Long id) {
         manageLectureUseCase.deleteById(id);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping()
+    public ResponseEntity<List<LectureResponse>> findLecture() {
+        List<LectureResponse> responses = manageLectureUseCase.findAll();
+        return ResponseEntity.ok(responses);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<LectureResponse> findLectureById(@PathVariable("id") Long id) {
+        return manageLectureUseCase.findById(id).map(ResponseEntity::ok).orElse(ResponseEntity.badRequest().build());
     }
 }
