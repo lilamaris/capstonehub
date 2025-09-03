@@ -9,6 +9,7 @@ public class AffiliationMapper {
     public AffiliationResponse toResponse(Affiliation domain) {
         if (domain == null) return null;
         return AffiliationResponse.builder()
+                .id(domain.id().value())
                 .effectiveStartDate(domain.effective().start())
                 .effectiveEndDate(domain.effective().end())
                 .build();

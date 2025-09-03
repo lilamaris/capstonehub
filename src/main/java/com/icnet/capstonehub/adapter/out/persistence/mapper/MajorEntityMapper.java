@@ -1,7 +1,6 @@
 package com.icnet.capstonehub.adapter.out.persistence.mapper;
 
 import com.icnet.capstonehub.adapter.out.persistence.entity.MajorEntity;
-import com.icnet.capstonehub.application.port.out.response.MajorResponse;
 import com.icnet.capstonehub.domain.Major;
 import com.icnet.capstonehub.domain.common.EffectivePeriod;
 import org.springframework.stereotype.Component;
