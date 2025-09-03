@@ -1,7 +1,7 @@
 package com.icnet.capstonehub.adapter.out.persistence;
 
 import com.icnet.capstonehub.adapter.out.persistence.entity.CollegeEntity;
-import com.icnet.capstonehub.application.port.out.mapper.CollegeMapper;
+import com.icnet.capstonehub.adapter.out.persistence.mapper.CollegeEntityMapper;
 import com.icnet.capstonehub.adapter.out.persistence.repository.CollegeRepository;
 import com.icnet.capstonehub.application.port.out.CollegePort;
 import com.icnet.capstonehub.domain.College;
@@ -16,7 +16,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 class CollegePersistenceAdapter implements CollegePort {
     private final CollegeRepository collegeRepository;
-    private final CollegeMapper collegeMapper;
+    private final CollegeEntityMapper collegeMapper;
 
     @Override
     public College create(College inDomain) {

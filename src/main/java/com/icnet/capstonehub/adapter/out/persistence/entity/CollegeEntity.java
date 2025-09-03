@@ -26,7 +26,4 @@ public class CollegeEntity {
 
     @Column(name = "effective_end_date")
     private LocalDate effectiveEndDate;
-
-    @OneToMany(mappedBy = "college")
-    private List<MajorEntity> majors;
 }

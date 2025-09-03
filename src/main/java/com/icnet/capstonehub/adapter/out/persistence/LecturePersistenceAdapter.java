@@ -1,7 +1,7 @@
 package com.icnet.capstonehub.adapter.out.persistence;
 
 import com.icnet.capstonehub.adapter.out.persistence.entity.LectureEntity;
-import com.icnet.capstonehub.application.port.out.mapper.LectureMapper;
+import com.icnet.capstonehub.adapter.out.persistence.mapper.LectureEntityMapper;
 import com.icnet.capstonehub.adapter.out.persistence.repository.LectureRepository;
 import com.icnet.capstonehub.application.port.out.LecturePort;
 import com.icnet.capstonehub.domain.Lecture;
@@ -16,7 +16,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 class LecturePersistenceAdapter implements LecturePort {
     private final LectureRepository lectureRepository;
-    private final LectureMapper lectureMapper;
+    private final LectureEntityMapper lectureMapper;
 
     @Override
     public Lecture create(Lecture inDomain) {

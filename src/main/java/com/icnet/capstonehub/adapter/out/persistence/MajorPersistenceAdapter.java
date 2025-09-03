@@ -1,7 +1,7 @@
 package com.icnet.capstonehub.adapter.out.persistence;
 
 import com.icnet.capstonehub.adapter.out.persistence.entity.MajorEntity;
-import com.icnet.capstonehub.application.port.out.mapper.MajorMapper;
+import com.icnet.capstonehub.adapter.out.persistence.mapper.MajorEntityMapper;
 import com.icnet.capstonehub.adapter.out.persistence.repository.MajorRepository;
 import com.icnet.capstonehub.application.port.out.MajorPort;
 import com.icnet.capstonehub.domain.Major;
@@ -16,7 +16,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 class MajorPersistenceAdapter implements MajorPort {
     private final MajorRepository majorRepository;
-    private final MajorMapper majorMapper;
+    private final MajorEntityMapper majorMapper;
 
     @Override
     public Major create(Major inDomain) {

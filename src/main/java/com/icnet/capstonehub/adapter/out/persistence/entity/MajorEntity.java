@@ -25,8 +25,4 @@ public class MajorEntity {
 
     @Column(name = "effective_end_date")
     private LocalDate effectiveEndDate;
-
-    @ManyToOne
-    @JoinColumn(name = "college_id")
-    private CollegeEntity college;
 }
