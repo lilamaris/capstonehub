@@ -10,6 +10,8 @@ public class AffiliationMapper {
         if (domain == null) return null;
         return AffiliationResponse.builder()
                 .id(domain.id().value())
+                .college(new AffiliationResponse.College(domain.college().id().value(), domain.college().name()))
+                .major(new AffiliationResponse.Major(domain.major().id().value(), domain.major().name()))
                 .effectiveStartDate(domain.effective().start())
                 .effectiveEndDate(domain.effective().end())
                 .build();

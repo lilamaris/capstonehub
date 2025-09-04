@@ -11,22 +11,21 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class AffiliationEntityMapper {
-    public AffiliationEntity toEntity(Affiliation domain, CollegeEntity collegeEntity, MajorEntity majorEntity) {
-        if (domain == null) return null;
+    public AffiliationEntity toEntity(CollegeEntity collegeEntity, MajorEntity majorEntity, EffectivePeriod period) {
         return AffiliationEntity.builder()
                 .college(collegeEntity)
                 .major(majorEntity)
-                .effectiveStartDate(domain.effective().start())
-                .effectiveEndDate(domain.effective().end())
+                .effectiveStartDate(period.start())
+                .effectiveEndDate(period.end())
                 .build();
     }
 
-    public Affiliation toDomain(AffiliationEntity entity) {
+    public Affiliation toDomain(AffiliationEntity entity, College college, Major major) {
         if (entity == null) return null;
         return Affiliation.builder()
                 .id(new Affiliation.AffiliationId(entity.getId()))
-                .collegeId(new College.CollegeId(entity.getCollege().getId()))
-                .majorId(new Major.MajorId(entity.getMajor().getId()))
+                .college(college)
+                .major(major)
                 .effective(new EffectivePeriod(entity.getEffectiveStartDate(), entity.getEffectiveEndDate()))
                 .build();
     }

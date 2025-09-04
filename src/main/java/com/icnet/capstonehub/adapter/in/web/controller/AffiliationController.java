@@ -28,17 +28,4 @@ public class AffiliationController {
         AffiliationResponse response = manageAffiliationUseCase.assignMajorToCollege(command);
         return ResponseEntity.ok(response);
     }
-
-    @PutMapping
-    public ResponseEntity<AffiliationResponse> reassignAffiliation(@RequestBody ReassignAffiliationRequest request) {
-        ReassignAffiliationCommand command = ReassignAffiliationCommand.builder()
-                .collegeId(request.collegeId())
-                .majorId(request.majorId())
-                .effectiveStartDate(request.effectiveStartDate())
-                .effectiveEndDate(request.effectiveEndDate())
-                .build();
-
-        AffiliationResponse response = manageAffiliationUseCase.reassignMajorToCollege(command);
-        return ResponseEntity.ok(response);
-    }
 }
