@@ -1,0 +1,11 @@
+package com.icnet.capstonehub.application.port.in.result;
+
+import lombok.Builder;
+
+import java.util.UUID;
+
+@Builder
+public record MajorResult(
+    UUID id,
+    String name
+) {}

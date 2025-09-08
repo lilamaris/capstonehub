@@ -6,9 +6,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface MajorPort {
-    Major create(Major inDomain);
-    Major update(Long id, Major inDomain);
-    List<Major> findAll();
-    Optional<Major> findById(Long id);
-    void delete(Long id);
+    List<Major> getAll();
+    Optional<Major> get(Major.Id id);
+    Major save(Major major);
 }

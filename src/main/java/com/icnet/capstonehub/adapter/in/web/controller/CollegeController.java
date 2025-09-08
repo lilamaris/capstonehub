@@ -1,11 +1,10 @@
 package com.icnet.capstonehub.adapter.in.web.controller;
 
-import com.icnet.capstonehub.adapter.in.web.dto.CreateCollegeRequest;
-import com.icnet.capstonehub.adapter.in.web.dto.UpdateCollegeRequest;
-import com.icnet.capstonehub.application.port.in.*;
-import com.icnet.capstonehub.application.port.in.command.CreateCollegeCommand;
-import com.icnet.capstonehub.application.port.in.command.UpdateCollegeCommand;
-import com.icnet.capstonehub.application.port.out.response.CollegeResponse;
+import com.icnet.capstonehub.adapter.in.web.mapper.CollegeResponseMapper;
+import com.icnet.capstonehub.adapter.in.web.request.CollegeCreateRequest;
+import com.icnet.capstonehub.adapter.in.web.response.CollegeResponse;
+import com.icnet.capstonehub.application.port.in.CollegeUseCase;
+import com.icnet.capstonehub.application.port.in.command.CollegeCreateCommand;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,48 +14,23 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/college")
-class CollegeController {
-    private final ManageCollegeUseCase manageCollegeUseCase;
+public class CollegeController {
+    private final CollegeUseCase collegeUseCase;
+
+    @GetMapping
+    public ResponseEntity<List<CollegeResponse>> getCollege() {
+        List<CollegeResponse> response = collegeUseCase.getAll().stream()
+                .map(CollegeResponseMapper::toResponse).toList();
+        return ResponseEntity.ok(response);
+    }
 
     @PostMapping
-    public ResponseEntity<CollegeResponse> createCollege(@RequestBody CreateCollegeRequest request) {
-        CreateCollegeCommand command = CreateCollegeCommand.builder()
+    public ResponseEntity<CollegeResponse> createCollege(@RequestBody CollegeCreateRequest request) {
+        CollegeCreateCommand command = CollegeCreateCommand.builder()
                 .name(request.name())
-                .effectiveStartDate(request.effectiveStartDate())
-                .effectiveEndDate(request.effectiveEndDate())
                 .build();
 
-        CollegeResponse response = manageCollegeUseCase.create(command);
+        CollegeResponse response = CollegeResponseMapper.toResponse(collegeUseCase.createCollege(command));
         return ResponseEntity.ok(response);
-    }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<CollegeResponse> updateCollege(@RequestBody UpdateCollegeRequest request, @PathVariable("id") Long id) {
-        UpdateCollegeCommand command = UpdateCollegeCommand.builder()
-                .id(id)
-                .name(request.name())
-                .effectiveStartDate(request.effectiveStartDate())
-                .effectiveEndDate(request.effectiveEndDate())
-                .build();
-
-        CollegeResponse response = manageCollegeUseCase.update(command);
-        return ResponseEntity.ok(response);
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteCollege(@PathVariable("id") Long id) {
-        manageCollegeUseCase.deleteById(id);
-        return ResponseEntity.ok().build();
-    }
-
-    @GetMapping()
-    public ResponseEntity<List<CollegeResponse>> findCollege() {
-        List<CollegeResponse> response = manageCollegeUseCase.findAll();
-        return ResponseEntity.ok(response);
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<CollegeResponse> findCollegeById(@PathVariable("id") Long id) {
-        return manageCollegeUseCase.findById(id).map(ResponseEntity::ok).orElse(ResponseEntity.badRequest().build());
     }
 }

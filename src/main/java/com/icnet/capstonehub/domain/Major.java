@@ -1,10 +1,10 @@
 package com.icnet.capstonehub.domain;
 
-import com.icnet.capstonehub.domain.common.EffectivePeriod;
 import lombok.*;
 
+import java.util.UUID;
+
 @Builder
-public record Major(MajorId id, String name, EffectivePeriod effective) {
-    public record MajorId(Long value) {
-    }
+public record Major(Id id, String name) {
+    public record Id(UUID value) {}
 }

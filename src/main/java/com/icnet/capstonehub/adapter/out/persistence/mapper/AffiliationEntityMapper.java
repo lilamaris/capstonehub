@@ -1,32 +1,23 @@
 package com.icnet.capstonehub.adapter.out.persistence.mapper;
 
-import com.icnet.capstonehub.adapter.out.persistence.entity.CollegeEntity;
-import com.icnet.capstonehub.adapter.out.persistence.entity.MajorEntity;
-import com.icnet.capstonehub.adapter.out.persistence.entity.join.AffiliationEntity;
+import com.icnet.capstonehub.adapter.out.persistence.entity.AffiliationEntity;
 import com.icnet.capstonehub.domain.Affiliation;
-import com.icnet.capstonehub.domain.College;
-import com.icnet.capstonehub.domain.Major;
-import com.icnet.capstonehub.domain.common.EffectivePeriod;
-import org.springframework.stereotype.Component;
 
-@Component
 public class AffiliationEntityMapper {
-    public AffiliationEntity toEntity(CollegeEntity collegeEntity, MajorEntity majorEntity, EffectivePeriod period) {
+    public static AffiliationEntity toEntity(Affiliation domain) {
         return AffiliationEntity.builder()
-                .college(collegeEntity)
-                .major(majorEntity)
-                .effectiveStartDate(period.start())
-                .effectiveEndDate(period.end())
+                .version(VersionEntityMapper.toEntity(domain.version()))
+                .college(CollegeEntityMapper.toEntity(domain.college()))
+                .major(MajorEntityMapper.toEntity(domain.major()))
                 .build();
     }
 
-    public Affiliation toDomain(AffiliationEntity entity, College college, Major major) {
-        if (entity == null) return null;
+    public static Affiliation toDomain(AffiliationEntity entity) {
         return Affiliation.builder()
-                .id(new Affiliation.AffiliationId(entity.getId()))
-                .college(college)
-                .major(major)
-                .effective(new EffectivePeriod(entity.getEffectiveStartDate(), entity.getEffectiveEndDate()))
+                .id(new Affiliation.Id(entity.getId()))
+                .version(VersionEntityMapper.toDomain(entity.getVersion()))
+                .college(CollegeEntityMapper.toDomain(entity.getCollege()))
+                .major(MajorEntityMapper.toDomain(entity.getMajor()))
                 .build();
     }
 }

@@ -1,9 +1,10 @@
 package com.icnet.capstonehub.domain;
 
-import com.icnet.capstonehub.domain.common.EffectivePeriod;
 import lombok.*;
 
+import java.util.UUID;
+
 @Builder
-public record College(CollegeId id, String name, EffectivePeriod effective) {
-    public record CollegeId(Long value) {}
+public record College(Id id, String name) {
+    public record Id(UUID value) {}
 }

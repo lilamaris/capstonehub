@@ -1,9 +1,16 @@
 package com.icnet.capstonehub.domain;
 
-import com.icnet.capstonehub.domain.common.EffectivePeriod;
 import lombok.Builder;
+import lombok.With;
 
-@Builder
-public record Affiliation(AffiliationId id, Major major, College college, EffectivePeriod effective) {
-    public record AffiliationId(Long value) {}
+import java.util.UUID;
+
+@Builder(toBuilder = true)
+public record Affiliation (
+    @With Version version,
+    Id id,
+    Major major,
+    College college
+) {
+    public record Id(UUID value) {}
 }
