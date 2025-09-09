@@ -8,7 +8,7 @@ import java.util.UUID;
 
 public interface AffiliationUseCase {
     List<AffiliationResult> getAffiliationLineage(UUID lineageId);
-    AffiliationResult createAffiliationLineage(UUID collegeId, UUID majorId, LocalDate startDate, LocalDate endDate, String versionDescription);
-    AffiliationResult successionMajorLineage(UUID lineageId, UUID majorId, LocalDate startDate, LocalDate endDate, String versionDescription);
-    AffiliationResult successionCollegeLineage(UUID lineageId, UUID collegeId, LocalDate startDate, LocalDate endDate, String versionDescription);
+    AffiliationResult initialAffiliationLineage(UUID collegeId, UUID majorId, LocalDate validFrom, LocalDate validTo, String versionDescription);
+    AffiliationResult appendAffiliationLineage(UUID lineageId, UUID collegeId, UUID majorId, LocalDate validFrom, LocalDate validTo, String versionDescription);
+    AffiliationResult amendAffiliationLineage(UUID lineageId, UUID affiliationId, UUID collegeId, UUID majorId, LocalDate validFrom, LocalDate validTo, String versionDescription);
 }

@@ -16,30 +16,49 @@ public interface AffiliationRepository extends JpaRepository<AffiliationEntity, 
     @Query("""
             SELECT a
             FROM AffiliationEntity a
-            INNER JOIN a.version v
-            WHERE v.lineageId = :lineageId
-            ORDER By v.versionNo ASC
+            LEFT JOIN FETCH a.version v
+            LEFT JOIN FETCH a.lineage l
+            WHERE l.scope = com.icnet.capstonehub.domain.Lineage.Scope.AFFILIATION
+                AND l.lineageId = :lineageId
+                AND l.validFrom <= :now
+                AND (l.validTo IS NULL OR l.validTo > :now)
+                AND v.txTo IS NULL
             """)
-    List<AffiliationEntity> findByLineageId(@Param("lineageId") UUID lineageId);
-
-    @Query("""
-            SELECT a
-            FROM AffiliationEntity a
-            INNER JOIN a.version v
-            WHERE v.lineageId = :lineageId
-                AND v.validFrom <= :current
-                AND (v.validTo IS NULL OR v.validTo > :current)
-            """)
-    Optional<AffiliationEntity> findCurrent(
+    Optional<AffiliationEntity> findLineageHead(
             @Param("lineageId") UUID lineageId,
-            @Param("current") LocalDate current
+            @Param("now") LocalDate now
     );
 
     @Query("""
             SELECT a
             FROM AffiliationEntity a
-            INNER JOIN a.version v
-            WHERE v.lineageId = :lineageId
-                AND v.validTo IS NULL""")
-    Optional<AffiliationEntity> findCurrent(@Param("lineageId") UUID lineageId);
+            LEFT JOIN FETCH a.version v
+            LEFT JOIN FETCH a.lineage l
+            WHERE l.scope = com.icnet.capstonehub.domain.Lineage.Scope.AFFILIATION
+                AND l.lineageId = :lineageId
+                AND v.txFrom <= :txAt
+                AND (v.txTo IS NULL OR v.txTo > :txAt)
+            """)
+    List<AffiliationEntity> findLineageSnapshotAtTx(
+            @Param("lineageId") UUID lineageId,
+            @Param("txAt") LocalDate txAt
+    );
+
+    @Query("""
+            SELECT a
+            FROM AffiliationEntity a
+            LEFT JOIN FETCH a.version v
+            LEFT JOIN FETCH a.lineage l
+            WHERE l.scope = com.icnet.capstonehub.domain.Lineage.Scope.AFFILIATION
+                AND l.lineageId = :lineageId
+                AND l.validFrom <= :on
+                AND (l.validTo IS NULL OR l.validTo > :on)
+                AND v.txFrom <= :txAt
+                AND (v.txTo IS NULL OR v.txTo > :txAt)
+            """)
+    List<AffiliationEntity> findLineageSnapshotAtTxOnDate(
+            @Param("lineageId") UUID lineageId,
+            @Param("txAt") LocalDate txAt,
+            @Param("on") LocalDate on
+    );
 }

@@ -7,10 +7,8 @@ public class VersionResultMapper {
     public static VersionResult toResult(Version domain) {
         return VersionResult.builder()
                 .id(domain.id().value())
-                .lineageId(domain.lineageId().value())
-                .lineageScope(domain.lineageScope().name())
-                .validFrom(domain.validFrom())
-                .validTo(domain.validTo())
+                .txFrom(domain.txPeriod().from())
+                .txTo(domain.txPeriod().to())
                 .versionNo(domain.versionNo())
                 .versionDescription(domain.versionDescription())
                 .build();

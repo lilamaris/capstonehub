@@ -3,18 +3,25 @@ package com.icnet.capstonehub.adapter.out.persistence.mapper;
 import com.icnet.capstonehub.adapter.out.persistence.entity.MajorEntity;
 import com.icnet.capstonehub.domain.Major;
 
+import java.util.Optional;
+import java.util.UUID;
+
 public class MajorEntityMapper {
     public static MajorEntity toEntity(Major domain) {
-        if (domain == null) return null;
+        UUID id = Optional.ofNullable(domain.id())
+                .map(UUID.class::cast)
+                .orElse(null);
+
         return MajorEntity.builder()
+                .id(id)
                 .name(domain.name())
                 .build();
     }
 
     public static Major toDomain(MajorEntity entity) {
-        if (entity == null) return null;
+        Major.Id id = new Major.Id(entity.getId());
         return Major.builder()
-                .id(new Major.Id(entity.getId()))
+                .id(id)
                 .name(entity.getName())
                 .build();
     }

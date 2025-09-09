@@ -9,8 +9,8 @@ public class VersionResponseMapper {
                 .id(result.id())
                 .lineageId(result.lineageId())
                 .lineageScope(result.lineageScope())
-                .validFrom(result.validFrom())
-                .validTo(result.validTo())
+                .txFrom(result.txFrom())
+                .txTo(result.txTo())
                 .versionNo(result.versionNo())
                 .versionDescription(result.versionDescription())
                 .build();

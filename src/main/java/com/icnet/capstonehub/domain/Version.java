@@ -5,27 +5,26 @@ import lombok.Builder;
 import java.time.LocalDate;
 import java.util.UUID;
 
-@Builder
-public record Version (
-    Id id,
-    LineageId lineageId,
-    LineageScope lineageScope,
-    LocalDate validFrom,
-    LocalDate validTo,
-    Integer versionNo,
-    String versionDescription
+@Builder(toBuilder = true)
+public record Version(
+        Period txPeriod,
+        Id id,
+        Integer versionNo,
+        String versionDescription
 ) {
     public record Id(UUID value) {}
-    public record LineageId(UUID value) {}
-    public enum LineageScope { AFFILIATION, COURSE }
 
-    public Version next(LocalDate validFrom, LocalDate validTo, String versionDescription) {
+    public Version closeTx(LocalDate txTo) {
+        Period close = txPeriod.close(txTo);
+        return this.toBuilder()
+                .txPeriod(close)
+                .build();
+    }
+
+    public Version next(Period txPeriod, String versionDescription) {
         return Version.builder()
-                .lineageId(lineageId)
-                .lineageScope(lineageScope)
                 .versionNo(versionNo + 1)
-                .validFrom(validFrom)
-                .validTo(validTo)
+                .txPeriod(txPeriod)
                 .versionDescription(versionDescription)
                 .build();
     }

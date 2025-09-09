@@ -10,8 +10,8 @@ public record VersionResult(
         UUID id,
         UUID lineageId,
         String lineageScope,
-        LocalDate validFrom,
-        LocalDate validTo,
+        LocalDate txFrom,
+        LocalDate txTo,
         Integer versionNo,
         String versionDescription
 ) {}

@@ -8,7 +8,7 @@ import com.icnet.capstonehub.adapter.out.persistence.mapper.VersionEntityMapper;
 import com.icnet.capstonehub.adapter.out.persistence.repository.AffiliationRepository;
 import com.icnet.capstonehub.application.port.out.AffiliationPort;
 import com.icnet.capstonehub.domain.Affiliation;
-import com.icnet.capstonehub.domain.Version;
+import com.icnet.capstonehub.domain.Lineage;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -26,19 +26,28 @@ public class AffiliationPersistenceAdapter implements AffiliationPort {
     private final AffiliationRepository affiliationRepository;
 
     @Override
-    public List<Affiliation> getLineage(Version.LineageId lineageId) {
-        return affiliationRepository.findByLineageId(lineageId.value()).stream()
-                .map(AffiliationEntityMapper::toDomain).toList();
+    public Optional<Affiliation> get(Affiliation.Id id) {
+        return affiliationRepository.findById(id.value()).map(AffiliationEntityMapper::toDomain);
     }
 
     @Override
-    public Optional<Affiliation> getCurrent(Version.LineageId lineageId) {
-        return affiliationRepository.findCurrent(lineageId.value()).map(AffiliationEntityMapper::toDomain);
+    public Optional<Affiliation> getLineageHead(Lineage.LineageId lineageId) {
+        return affiliationRepository.findLineageHead(lineageId.value(), LocalDate.now())
+                .map(AffiliationEntityMapper::toDomain);
     }
 
     @Override
-    public Optional<Affiliation> getCurrent(Version.LineageId lineageId, LocalDate current) {
-        return affiliationRepository.findCurrent(lineageId.value(), current).map(AffiliationEntityMapper::toDomain);
+    public List<Affiliation> getLineageSnapshotAtTx(Lineage.LineageId lineageId, LocalDate txAt) {
+        return affiliationRepository.findLineageSnapshotAtTx(lineageId.value(), txAt).stream()
+                .map(AffiliationEntityMapper::toDomain)
+                .toList();
+    }
+
+    @Override
+    public List<Affiliation> getLineageSnapshotAtTxOnDate(Lineage.LineageId lineageId, LocalDate txAt, LocalDate on) {
+        return affiliationRepository.findLineageSnapshotAtTxOnDate(lineageId.value(), txAt, on).stream()
+                .map(AffiliationEntityMapper::toDomain)
+                .toList();
     }
 
     @Override

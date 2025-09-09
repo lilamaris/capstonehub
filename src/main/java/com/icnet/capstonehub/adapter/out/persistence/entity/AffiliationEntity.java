@@ -28,4 +28,8 @@ public class AffiliationEntity {
     @OneToOne(cascade = CascadeType.PERSIST, optional = false)
     @JoinColumn(name = "version_id", nullable = false)
     private VersionEntity version;
+
+    @ManyToOne
+    @JoinColumn(name = "lineage_id", nullable = false)
+    private LineageEntity lineage;
 }

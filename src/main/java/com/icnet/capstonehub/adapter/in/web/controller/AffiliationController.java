@@ -2,6 +2,7 @@ package com.icnet.capstonehub.adapter.in.web.controller;
 
 import com.icnet.capstonehub.adapter.in.web.mapper.AffiliationResponseMapper;
 import com.icnet.capstonehub.adapter.in.web.request.AffiliationCreateLineageRequest;
+import com.icnet.capstonehub.adapter.in.web.request.AffiliationLineageAmendRequest;
 import com.icnet.capstonehub.adapter.in.web.response.AffiliationResponse;
 import com.icnet.capstonehub.application.port.in.AffiliationUseCase;
 import lombok.RequiredArgsConstructor;
@@ -28,13 +29,55 @@ public class AffiliationController {
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping
+    @PostMapping("/lineage")
     public ResponseEntity<AffiliationResponse> createAffiliationLineage(
             @RequestBody AffiliationCreateLineageRequest request
     ) {
         log.info("Create affiliation lineage command with request={}", request.toString());
         AffiliationResponse response = AffiliationResponseMapper.toResponse(
-                affiliationUseCase.createAffiliationLineage(
+                affiliationUseCase.initialAffiliationLineage(
+                        request.collegeId(),
+                        request.majorId(),
+                        request.validFrom(),
+                        request.validTo(),
+                        request.versionDescription()
+                )
+        );
+
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/lineage/{lineageId}")
+    public ResponseEntity<AffiliationResponse> assignAffiliationLineage(
+            @PathVariable("lineageId") UUID lineageId,
+            @RequestBody AffiliationCreateLineageRequest request
+    ) {
+        log.info("Assign affiliation lineage command with request={}", request.toString());
+        AffiliationResponse response = AffiliationResponseMapper.toResponse(
+                affiliationUseCase.appendAffiliationLineage(
+                        lineageId,
+                        request.collegeId(),
+                        request.majorId(),
+                        request.validFrom(),
+                        request.validTo(),
+                        request.versionDescription()
+                )
+        );
+
+        return ResponseEntity.ok(response);
+    }
+
+    @PutMapping("/lineage/{lineageId}")
+    public ResponseEntity<AffiliationResponse> amendAffiliationLineage(
+            @PathVariable("lineageId") UUID lineageId,
+            @RequestBody AffiliationLineageAmendRequest request
+    ) {
+        log.info("Assign affiliation lineage command with request={}", request.toString());
+
+        AffiliationResponse response = AffiliationResponseMapper.toResponse(
+                affiliationUseCase.amendAffiliationLineage(
+                        lineageId,
+                        request.id(),
                         request.collegeId(),
                         request.majorId(),
                         request.validFrom(),

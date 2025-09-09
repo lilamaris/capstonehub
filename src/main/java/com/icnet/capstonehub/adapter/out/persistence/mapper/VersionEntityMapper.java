@@ -1,29 +1,35 @@
 package com.icnet.capstonehub.adapter.out.persistence.mapper;
 
 import com.icnet.capstonehub.adapter.out.persistence.entity.VersionEntity;
+import com.icnet.capstonehub.domain.Period;
 import com.icnet.capstonehub.domain.Version;
+
+import java.util.Optional;
+import java.util.UUID;
 
 public class VersionEntityMapper {
     public static VersionEntity toEntity(Version domain) {
+        UUID id = Optional.ofNullable(domain.id())
+                .map(UUID.class::cast)
+                .orElse(null);
+
         return VersionEntity.builder()
-                .lineageId(domain.lineageId().value())
-                .lineageScope(domain.lineageScope())
+                .id(id)
                 .versionNo(domain.versionNo())
-                .validFrom(domain.validFrom())
-                .validTo(domain.validTo())
                 .versionDescription(domain.versionDescription())
+                .txFrom(domain.txPeriod().from())
+                .txTo(domain.txPeriod().to())
                 .build();
     }
 
     public static Version toDomain(VersionEntity entity) {
+        Version.Id id = new Version.Id(entity.getId());
+        Period txPeriod = new Period(entity.getTxFrom(), entity.getTxTo());
         return Version.builder()
-                .id(new Version.Id(entity.getId()))
-                .lineageId(new Version.LineageId(entity.getLineageId()))
-                .lineageScope(entity.getLineageScope())
+                .id(id)
                 .versionNo(entity.getVersionNo())
-                .validFrom(entity.getValidFrom())
-                .validTo(entity.getValidTo())
                 .versionDescription(entity.getVersionDescription())
+                .txPeriod(txPeriod)
                 .build();
     }
 }
