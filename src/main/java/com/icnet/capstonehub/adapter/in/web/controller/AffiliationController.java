@@ -5,6 +5,9 @@ import com.icnet.capstonehub.adapter.in.web.request.AffiliationCreateLineageRequ
 import com.icnet.capstonehub.adapter.in.web.request.AffiliationLineageAmendRequest;
 import com.icnet.capstonehub.adapter.in.web.response.AffiliationResponse;
 import com.icnet.capstonehub.application.port.in.AffiliationUseCase;
+import com.icnet.capstonehub.application.port.in.command.AffiliationLineageAmendCommand;
+import com.icnet.capstonehub.application.port.in.command.AffiliationLineageAppendCommand;
+import com.icnet.capstonehub.application.port.in.command.AffiliationLineageInitialCommand;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +23,7 @@ import java.util.UUID;
 public class AffiliationController {
     private final AffiliationUseCase affiliationUseCase;
 
-    @GetMapping("/{lineageId}")
+    @GetMapping("/lineage/{lineageId}")
     public ResponseEntity<List<AffiliationResponse>> getAffiliationLineage(
             @PathVariable("lineageId") UUID lineageId
     ) {
@@ -33,62 +36,79 @@ public class AffiliationController {
     public ResponseEntity<AffiliationResponse> createAffiliationLineage(
             @RequestBody AffiliationCreateLineageRequest request
     ) {
-        AffiliationResponse response = AffiliationResponseMapper.toResponse(
-                affiliationUseCase.initialAffiliationLineage(
-                        request.collegeId(),
-                        request.majorId(),
-                        request.validFrom(),
-                        request.validTo(),
-                        request.versionDescription()
-                )
-        );
+        log.info("""
+                [Controller] Initialize affiliation lineage local variables
+                request={}""", request);
+
+        var command = AffiliationLineageInitialCommand.builder()
+                .collegeId(request.collegeId())
+                .majorId(request.majorId())
+                .validFrom(request.validFrom())
+                .validTo(request.validTo())
+                .versionDescription(request.versionDescription())
+                .build();
+
+        var response = AffiliationResponseMapper.toResponse(affiliationUseCase.initialAffiliationLineage(command));
 
         log.info("""
-                [Controller] Initialize Affiliation Lineage Local Variables
-                request={}
-                response={}""", request, response);
+                [Controller] Initialize affiliation lineage local variables
+                response={}""", response);
 
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/lineage/{lineageId}")
+    @PostMapping("/lineage/{lineageSharedId}")
     public ResponseEntity<AffiliationResponse> assignAffiliationLineage(
-            @PathVariable("lineageId") UUID lineageId,
+            @PathVariable("lineageSharedId") UUID lineageSharedId,
             @RequestBody AffiliationCreateLineageRequest request
     ) {
-        log.info("Assign affiliation lineage command with request={}", request.toString());
-        AffiliationResponse response = AffiliationResponseMapper.toResponse(
-                affiliationUseCase.appendAffiliationLineage(
-                        lineageId,
-                        request.collegeId(),
-                        request.majorId(),
-                        request.validFrom(),
-                        request.validTo(),
-                        request.versionDescription()
-                )
-        );
+        log.info("""
+                [Controller] Assign affiliation lineage local variables
+                pathVariable={}
+                request={}""", lineageSharedId, request);
+
+        var command = AffiliationLineageAppendCommand.builder()
+                .lineageSharedId(lineageSharedId)
+                .collegeId(request.collegeId())
+                .majorId(request.majorId())
+                .validFrom(request.validFrom())
+                .validTo(request.validTo())
+                .versionDescription(request.versionDescription())
+                .build();
+
+        AffiliationResponse response = AffiliationResponseMapper.toResponse(affiliationUseCase.appendAffiliationLineage(command));
+
+        log.info("""
+                [Controller] Assign affiliation lineage local variables
+                response={}""", response);
 
         return ResponseEntity.ok(response);
     }
 
-    @PutMapping("/lineage/{lineageId}")
+    @PutMapping("/lineage/{lineageSharedId}/version/{versionSharedId}")
     public ResponseEntity<AffiliationResponse> amendAffiliationLineage(
-            @PathVariable("lineageId") UUID lineageId,
+            @PathVariable("lineageSharedId") UUID lineageSharedId,
+            @PathVariable("versionSharedId") UUID versionSharedId,
             @RequestBody AffiliationLineageAmendRequest request
     ) {
-        log.info("Assign affiliation lineage command with request={}", request.toString());
+        log.info("""
+                [Controller] Amend affiliation lineage local variables
+                pathVariable=(lineageSharedId={}, versionSharedId={})
+                request={}""", lineageSharedId, versionSharedId, request);
 
-        AffiliationResponse response = AffiliationResponseMapper.toResponse(
-                affiliationUseCase.amendAffiliationLineage(
-                        lineageId,
-                        request.id(),
-                        request.collegeId(),
-                        request.majorId(),
-                        request.validFrom(),
-                        request.validTo(),
-                        request.versionDescription()
-                )
-        );
+        var command = AffiliationLineageAmendCommand.builder()
+                .lineageSharedId(lineageSharedId)
+                .versionSharedId(versionSharedId)
+                .collegeId(request.collegeId())
+                .majorId(request.majorId())
+                .versionDescription(request.versionDescription())
+                .build();
+
+        AffiliationResponse response = AffiliationResponseMapper.toResponse(affiliationUseCase.amendAffiliationLineage(command));
+
+        log.info("""
+                [Controller] Amend affiliation lineage local variables
+                response={}""", response);
 
         return ResponseEntity.ok(response);
     }

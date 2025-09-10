@@ -6,9 +6,16 @@ import java.time.LocalDate;
 import java.util.Objects;
 
 public record Period(LocalDate from, LocalDate to) {
-    public static Period nowOpen() {
+    public static Period fromToInfinity(LocalDate from) {
         return Period.builder()
-                .from(LocalDate.now())
+                .from(from)
+                .build();
+    }
+
+    public static Period pair(LocalDate from, LocalDate to) {
+        return Period.builder()
+                .from(from)
+                .to(to)
                 .build();
     }
 

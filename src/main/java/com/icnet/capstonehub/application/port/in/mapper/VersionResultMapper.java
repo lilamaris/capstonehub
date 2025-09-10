@@ -7,6 +7,7 @@ public class VersionResultMapper {
     public static VersionResult toResult(Version domain) {
         return VersionResult.builder()
                 .id(domain.id().value())
+                .sharedId(domain.sharedId().value())
                 .txFrom(domain.txPeriod().from())
                 .txTo(domain.txPeriod().to())
                 .versionNo(domain.versionNo())

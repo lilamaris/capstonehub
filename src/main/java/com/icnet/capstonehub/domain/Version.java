@@ -8,11 +8,13 @@ import java.util.UUID;
 @Builder(toBuilder = true)
 public record Version(
         Id id,
+        SharedId sharedId,
         Integer versionNo,
         String versionDescription,
         Period txPeriod
 ) {
     public record Id(UUID value) {}
+    public record SharedId(UUID value) {}
 
     public Version closeTx(LocalDate txTo) {
         Period close = txPeriod.close(txTo);
@@ -23,6 +25,7 @@ public record Version(
 
     public Version next(Period txPeriod, String versionDescription) {
         return Version.builder()
+                .sharedId(sharedId)
                 .versionNo(versionNo + 1)
                 .txPeriod(txPeriod)
                 .versionDescription(versionDescription)

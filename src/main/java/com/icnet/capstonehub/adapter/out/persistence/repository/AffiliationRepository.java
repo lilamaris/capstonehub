@@ -19,28 +19,13 @@ public interface AffiliationRepository extends JpaRepository<AffiliationEntity, 
             LEFT JOIN FETCH a.version v
             LEFT JOIN FETCH a.lineage l
             WHERE l.scope = com.icnet.capstonehub.domain.Lineage.Scope.AFFILIATION
-                AND l.lineageId = :lineageId
-                AND l.validFrom <= :now
-                AND (l.validTo IS NULL OR l.validTo > :now)
-                AND v.txTo IS NULL
-            """)
-    Optional<AffiliationEntity> findLineageHead(
-            @Param("lineageId") UUID lineageId,
-            @Param("now") LocalDate now
-    );
-
-    @Query("""
-            SELECT a
-            FROM AffiliationEntity a
-            LEFT JOIN FETCH a.version v
-            LEFT JOIN FETCH a.lineage l
-            WHERE l.scope = com.icnet.capstonehub.domain.Lineage.Scope.AFFILIATION
-                AND l.lineageId = :lineageId
+                AND l.sharedId = :lineageSharedId
+                AND v.sharedId = :versionSharedId
                 AND v.txFrom <= :txAt
-                AND (v.txTo IS NULL OR v.txTo > :txAt)
-            """)
-    List<AffiliationEntity> findLineageSnapshotAtTx(
-            @Param("lineageId") UUID lineageId,
+                AND (v.txTo IS NULL OR v.txTo > :txAt)""")
+    Optional<AffiliationEntity> findSnapshotOfRecord(
+            @Param("lineageSharedId") UUID lineageSharedId,
+            @Param("versionSharedId") UUID versionSharedId,
             @Param("txAt") LocalDate txAt
     );
 
@@ -50,15 +35,55 @@ public interface AffiliationRepository extends JpaRepository<AffiliationEntity, 
             LEFT JOIN FETCH a.version v
             LEFT JOIN FETCH a.lineage l
             WHERE l.scope = com.icnet.capstonehub.domain.Lineage.Scope.AFFILIATION
-                AND l.lineageId = :lineageId
-                AND l.validFrom <= :on
-                AND (l.validTo IS NULL OR l.validTo > :on)
+                AND l.sharedId = :lineageSharedId
+                AND l.validFrom <= :validAt
+                AND (l.validTo IS NULL OR l.validTo > :validAt)
                 AND v.txFrom <= :txAt
-                AND (v.txTo IS NULL OR v.txTo > :txAt)
-            """)
-    List<AffiliationEntity> findLineageSnapshotAtTxOnDate(
-            @Param("lineageId") UUID lineageId,
-            @Param("txAt") LocalDate txAt,
-            @Param("on") LocalDate on
+                AND (v.txTo IS NULL OR v.txTo > :txAt)""")
+    Optional<AffiliationEntity> findSnapshotOfRecord(
+            @Param("lineageSharedId") UUID lineageSharedId,
+            @Param("validAt") LocalDate validAt,
+            @Param("txAt") LocalDate txAt
+    );
+
+    @Query("""
+            SELECT a
+            FROM AffiliationEntity a
+            LEFT JOIN FETCH a.version v
+            LEFT JOIN FETCH a.lineage l
+            WHERE l.scope = com.icnet.capstonehub.domain.Lineage.Scope.AFFILIATION
+                AND l.sharedId = :lineageSharedId
+                AND v.sharedId = :versionSharedId""")
+    List<AffiliationEntity> findVersionOfRecord(
+            @Param("lineageSharedId") UUID lineageSharedId,
+            @Param("versionSharedId") UUID versionSharedId
+    );
+
+    @Query("""
+            SELECT a
+            FROM AffiliationEntity a
+            LEFT JOIN FETCH a.version v
+            LEFT JOIN FETCH a.lineage l
+            WHERE l.scope = com.icnet.capstonehub.domain.Lineage.Scope.AFFILIATION
+                AND l.sharedId = :lineageSharedId
+                AND l.validFrom <= :validAt
+                AND (l.validTo IS NULL OR l.validTo > :validAt)""")
+    List<AffiliationEntity> findVersionOfRecord(
+            @Param("lineageSharedId") UUID lineageSharedId,
+            @Param("validAt") LocalDate validAt
+    );
+
+    @Query("""
+            SELECT a
+            FROM AffiliationEntity a
+            LEFT JOIN FETCH a.version v
+            LEFT JOIN FETCH a.lineage l
+            WHERE l.scope = com.icnet.capstonehub.domain.Lineage.Scope.AFFILIATION
+                AND l.sharedId = :lineageSharedId
+                AND v.txFrom <= :txAt
+                AND (v.txTo IS NULL OR v.txTo > :txAt)""")
+    List<AffiliationEntity> findLineageOfSnapshot(
+            @Param("lineageSharedId") UUID lineageSharedId,
+            @Param("txAt") LocalDate txAt
     );
 }

@@ -10,6 +10,7 @@ import com.icnet.capstonehub.adapter.out.persistence.repository.AffiliationRepos
 import com.icnet.capstonehub.application.port.out.AffiliationPort;
 import com.icnet.capstonehub.domain.Affiliation;
 import com.icnet.capstonehub.domain.Lineage;
+import com.icnet.capstonehub.domain.Version;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -27,26 +28,34 @@ public class AffiliationPersistenceAdapter implements AffiliationPort {
     private final AffiliationRepository affiliationRepository;
 
     @Override
-    public Optional<Affiliation> get(Affiliation.Id id) {
-        return affiliationRepository.findById(id.value()).map(AffiliationEntityMapper::toDomain);
-    }
-
-    @Override
-    public Optional<Affiliation> getLineageHead(Lineage.LineageId lineageId) {
-        return affiliationRepository.findLineageHead(lineageId.value(), LocalDate.now())
+    public Optional<Affiliation> getSnapshotOfRecord(Lineage.SharedId lineageSharedId, Version.SharedId versionSharedId, LocalDate txAt) {
+        return affiliationRepository.findSnapshotOfRecord(lineageSharedId.value(), versionSharedId.value(), txAt)
                 .map(AffiliationEntityMapper::toDomain);
     }
 
     @Override
-    public List<Affiliation> getLineageSnapshotAtTx(Lineage.LineageId lineageId, LocalDate txAt) {
-        return affiliationRepository.findLineageSnapshotAtTx(lineageId.value(), txAt).stream()
+    public Optional<Affiliation> getSnapshotOfRecord(Lineage.SharedId lineageSharedId, LocalDate validAt, LocalDate txAt) {
+        return affiliationRepository.findSnapshotOfRecord(lineageSharedId.value(), validAt, txAt)
+                .map(AffiliationEntityMapper::toDomain);
+    }
+
+    @Override
+    public List<Affiliation> getLineageOfSnapshot(Lineage.SharedId lineageSharedId, LocalDate txAt) {
+        return affiliationRepository.findLineageOfSnapshot(lineageSharedId.value(), txAt).stream()
                 .map(AffiliationEntityMapper::toDomain)
                 .toList();
     }
 
     @Override
-    public List<Affiliation> getLineageSnapshotAtTxOnDate(Lineage.LineageId lineageId, LocalDate txAt, LocalDate on) {
-        return affiliationRepository.findLineageSnapshotAtTxOnDate(lineageId.value(), txAt, on).stream()
+    public List<Affiliation> getVersionOfRecord(Lineage.SharedId lineageSharedId, Version.SharedId versionSharedId) {
+        return affiliationRepository.findVersionOfRecord(lineageSharedId.value(), versionSharedId.value()).stream()
+                .map(AffiliationEntityMapper::toDomain)
+                .toList();
+    }
+
+    @Override
+    public List<Affiliation> getVersionOfRecord(Lineage.SharedId lineageSharedId, LocalDate validAt) {
+        return affiliationRepository.findVersionOfRecord(lineageSharedId.value(), validAt).stream()
                 .map(AffiliationEntityMapper::toDomain)
                 .toList();
     }

@@ -17,11 +17,11 @@ public class LineageEntity {
     @Id @GeneratedValue
     private UUID id;
 
-    @Column(name = "lineage_id", nullable = false)
-    private UUID lineageId;
+    @Column(name = "shared_id", nullable = false, updatable = false)
+    private UUID sharedId;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "lineage_scope", nullable = false, updatable = false)
+    @Column(name = "scope", nullable = false, updatable = false)
     private Lineage.Scope scope;
 
     @Column(name = "valid_from", nullable = false)

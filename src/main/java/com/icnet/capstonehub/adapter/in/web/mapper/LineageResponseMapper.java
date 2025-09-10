@@ -7,8 +7,8 @@ public class LineageResponseMapper {
     public static LineageResponse toResponse(LineageResult result) {
         return LineageResponse.builder()
                 .id(result.id())
-                .lineageId(result.lineageId())
-                .lineageScope(result.lineageScope())
+                .sharedId(result.sharedId())
+                .scope(result.scope())
                 .validFrom(result.validFrom())
                 .validTo(result.validTo())
                 .build();

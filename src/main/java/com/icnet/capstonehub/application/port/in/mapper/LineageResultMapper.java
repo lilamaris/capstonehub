@@ -7,8 +7,8 @@ public class LineageResultMapper {
     public static LineageResult toResult(Lineage domain) {
         return LineageResult.builder()
                 .id(domain.id().value())
-                .lineageId(domain.lineageId().value())
-                .lineageScope(domain.scope().name())
+                .sharedId(domain.sharedId().value())
+                .scope(domain.scope().name())
                 .validFrom(domain.validPeriod().from())
                 .validTo(domain.validPeriod().to())
                 .build();

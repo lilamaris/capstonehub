@@ -8,6 +8,7 @@ import java.util.UUID;
 @Builder
 public record VersionResponse(
     UUID id,
+    UUID sharedId,
     Integer versionNo,
     String versionDescription,
     LocalDate txFrom,

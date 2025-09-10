@@ -8,8 +8,8 @@ import java.util.UUID;
 @Builder
 public record LineageResult(
         UUID id,
-        UUID lineageId,
-        String lineageScope,
+        UUID sharedId,
+        String scope,
         LocalDate validFrom,
         LocalDate validTo
 ) {}

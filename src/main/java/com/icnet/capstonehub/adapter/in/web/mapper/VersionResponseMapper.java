@@ -7,6 +7,7 @@ public class VersionResponseMapper {
     public static VersionResponse toResponse(VersionResult result) {
         return VersionResponse.builder()
                 .id(result.id())
+                .sharedId(result.sharedId())
                 .versionNo(result.versionNo())
                 .versionDescription(result.versionDescription())
                 .txFrom(result.txFrom())

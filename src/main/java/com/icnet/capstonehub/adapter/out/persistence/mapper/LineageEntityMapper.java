@@ -15,7 +15,7 @@ public class LineageEntityMapper {
 
         return LineageEntity.builder()
                 .id(id)
-                .lineageId(domain.lineageId().value())
+                .sharedId(domain.sharedId().value())
                 .scope(domain.scope())
                 .validFrom(domain.validPeriod().from())
                 .validTo(domain.validPeriod().to())
@@ -24,11 +24,11 @@ public class LineageEntityMapper {
 
     public static Lineage toDomain(LineageEntity entity) {
         Lineage.Id id = new Lineage.Id(entity.getId());
-        Lineage.LineageId lineageId = new Lineage.LineageId(entity.getLineageId());
+        Lineage.SharedId sharedId = new Lineage.SharedId(entity.getSharedId());
         Period validPeriod = new Period(entity.getValidFrom(), entity.getValidTo());
         return Lineage.builder()
                 .id(id)
-                .lineageId(lineageId)
+                .sharedId(sharedId)
                 .scope(entity.getScope())
                 .validPeriod(validPeriod)
                 .build();

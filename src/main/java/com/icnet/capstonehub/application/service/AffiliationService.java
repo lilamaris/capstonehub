@@ -4,6 +4,9 @@ import com.icnet.capstonehub.application.exception.AffiliationLineageNotFoundExc
 import com.icnet.capstonehub.application.exception.CollegeNotFoundException;
 import com.icnet.capstonehub.application.exception.MajorNotFoundException;
 import com.icnet.capstonehub.application.port.in.AffiliationUseCase;
+import com.icnet.capstonehub.application.port.in.command.AffiliationLineageAmendCommand;
+import com.icnet.capstonehub.application.port.in.command.AffiliationLineageAppendCommand;
+import com.icnet.capstonehub.application.port.in.command.AffiliationLineageInitialCommand;
 import com.icnet.capstonehub.application.port.in.mapper.AffiliationResultMapper;
 import com.icnet.capstonehub.application.port.in.result.AffiliationResult;
 import com.icnet.capstonehub.application.port.out.AffiliationPort;
@@ -30,31 +33,46 @@ public class AffiliationService implements AffiliationUseCase {
     private final MajorPort majorPort;
 
     @Override
-    public List<AffiliationResult> getAffiliationLineage(UUID lineageId) {
-        Lineage.LineageId lId = new Lineage.LineageId(lineageId);
-        LocalDate  now = LocalDate.now();
-        return affiliationPort.getLineageSnapshotAtTx(lId, now).stream()
-                .map(AffiliationResultMapper::toResult).toList();
+    public List<AffiliationResult> getAffiliationLineage(UUID lineageSharedId) {
+        var now = LocalDate.now();
+        return affiliationPort.getLineageOfSnapshot(new Lineage.SharedId(lineageSharedId), now).stream()
+                .map(AffiliationResultMapper::toResult)
+                .toList();
     }
 
     @Override
-    public AffiliationResult initialAffiliationLineage(UUID collegeId, UUID majorId, LocalDate validFrom, LocalDate validTo, String versionDescription) {
-        College.Id cId = new College.Id(collegeId);
-        Major.Id mId = new Major.Id(majorId);
+    public List<AffiliationResult> getAffiliationLineage(UUID lineageSharedId, LocalDate txAt) {
+        return affiliationPort.getLineageOfSnapshot(new Lineage.SharedId(lineageSharedId), txAt).stream()
+                .map(AffiliationResultMapper::toResult)
+                .toList();
+    }
 
-        College college = collegePort.get(cId).orElseThrow(CollegeNotFoundException::new);
-        Major major = majorPort.get(mId).orElseThrow(MajorNotFoundException::new);
+    @Override
+    public AffiliationResult initialAffiliationLineage(AffiliationLineageInitialCommand command) {
+        var now = LocalDate.now();
+        var collegeId = new College.Id(command.collegeId());
+        var majorId = new Major.Id(command.majorId());
 
+        College college = collegePort.get(collegeId).orElseThrow(CollegeNotFoundException::new);
+        Major major = majorPort.get(majorId).orElseThrow(MajorNotFoundException::new);
+
+        var versionSharedId = new Version.SharedId(UUID.randomUUID());
+        var lineageSharedId = new Lineage.SharedId(UUID.randomUUID());
+
+        Period txPeriod = Period.fromToInfinity(now);
         Version version = Version.builder()
+                .sharedId(versionSharedId)
                 .versionNo(0)
-                .versionDescription(versionDescription)
-                .txPeriod(Period.nowOpen())
+                .versionDescription(command.versionDescription())
+                .txPeriod(txPeriod)
                 .build();
 
-        Period validPeriod = new Period(validFrom, validTo);
-        Lineage.LineageId lId = new Lineage.LineageId(UUID.randomUUID());
+        Period validPeriod = Period.builder()
+                .from(command.validFrom())
+                .to(command.validTo())
+                .build();
         Lineage lineage = Lineage.builder()
-                .lineageId(lId)
+                .sharedId(lineageSharedId)
                 .scope(Lineage.Scope.AFFILIATION)
                 .validPeriod(validPeriod)
                 .build();
@@ -68,78 +86,105 @@ public class AffiliationService implements AffiliationUseCase {
 
         log.info("""
                 [Service] Initialize Affiliation Lineage Local Variables
-                request=(collegeId={}, majorId={}, validFrom={}, validTo={}, versionDescription={}),
+                command={}
                 created=(domain={})
-                """, collegeId, majorId, validFrom, validTo, versionDescription, domain);
+                """, command, domain);
 
         return AffiliationResultMapper.toResult(affiliationPort.save(domain));
     }
 
     @Override
-    public AffiliationResult appendAffiliationLineage(UUID lineageId, UUID collegeId, UUID majorId, LocalDate validFrom, LocalDate validTo, String versionDescription) {
-        College.Id cId = new College.Id(collegeId);
-        Major.Id mId = new Major.Id(majorId);
+    public AffiliationResult appendAffiliationLineage(AffiliationLineageAppendCommand command) {
+        var now = LocalDate.now();
+        var collegeId = new College.Id(command.collegeId());
+        var majorId = new Major.Id(command.majorId());
 
-        College college = collegePort.get(cId).orElseThrow(CollegeNotFoundException::new);
-        Major major = majorPort.get(mId).orElseThrow(MajorNotFoundException::new);
+        College college = collegePort.get(collegeId).orElseThrow(CollegeNotFoundException::new);
+        Major major = majorPort.get(majorId).orElseThrow(MajorNotFoundException::new);
 
-        Version version = Version.builder()
+        var lineageSharedId = new Lineage.SharedId(command.lineageSharedId());
+        var versionSharedId = new Version.SharedId(UUID.randomUUID());
+
+        Affiliation prev = affiliationPort.getSnapshotOfRecord(lineageSharedId, now, now).
+                orElseThrow(AffiliationLineageNotFoundException::new);
+
+        Period txPeriod = Period.fromToInfinity(now);
+        Period validPeriod = Period.pair(command.validFrom(), command.validTo());
+
+        Affiliation prevClose = prev
+                .withLineage(prev.lineage().closeValid(command.validTo()))
+                .toBuilder()
+                .build();
+        affiliationPort.save(prevClose);
+
+        Version newVersion = Version.builder()
+                .sharedId(versionSharedId)
                 .versionNo(0)
-                .versionDescription(versionDescription)
-                .txPeriod(Period.nowOpen())
+                .versionDescription(command.versionDescription())
+                .txPeriod(txPeriod)
                 .build();
 
-        Period validPeriod = new Period(validFrom, validTo);
-        Lineage.LineageId lId = new Lineage.LineageId(lineageId);
+        Lineage nextLineage = prev.lineage().next(validPeriod);
 
-        Affiliation prev = affiliationPort.getLineageHead(lId).orElseThrow(AffiliationLineageNotFoundException::new);
         Affiliation next = prev
-                .withLineage(prev.lineage().next(validPeriod))
+                .withLineage(nextLineage)
                 .toBuilder()
-                .version(version)
+                .version(newVersion)
                 .college(college)
                 .major(major)
                 .build();
 
         log.info("""
                 Append Affiliation Lineage Local Variables
-                request=(collegeId={}, majorId={}, validFrom={}, validTo={}, versionDescription={}),
-                created=(next={})
-                """, collegeId, majorId, validFrom, validTo, versionDescription, next);
+                command={}
+                created=(
+                    prev={},
+                    prevClose={},
+                    next={})""", command, prev, prevClose, next);
 
         return AffiliationResultMapper.toResult(affiliationPort.save(next));
     }
 
     @Override
-    public AffiliationResult amendAffiliationLineage(UUID lineageId, UUID affiliationId, UUID collegeId, UUID majorId, LocalDate validFrom, LocalDate validTo, String versionDescription) {
-        log.info("Amend affiliation lineage lineageId={}, validFrom={}, validTo={}, versionDescription={}", lineageId, validFrom, validTo, versionDescription);
+    public AffiliationResult amendAffiliationLineage(AffiliationLineageAmendCommand command) {
+        var now = LocalDate.now();
+        var collegeId = new College.Id(command.collegeId());
+        var majorId = new Major.Id(command.majorId());
 
-        College.Id cId = new College.Id(collegeId);
-        Major.Id mId = new Major.Id(majorId);
+        College college = collegePort.get(collegeId).orElseThrow(CollegeNotFoundException::new);
+        Major major = majorPort.get(majorId).orElseThrow(MajorNotFoundException::new);
 
-        College college = collegePort.get(cId).orElseThrow(CollegeNotFoundException::new);
-        Major major = majorPort.get(mId).orElseThrow(MajorNotFoundException::new);
+        Lineage.SharedId lineageSharedId = new Lineage.SharedId(command.lineageSharedId());
+        Version.SharedId versionSharedId = new Version.SharedId(command.versionSharedId());
 
-        Period txPeriod = Period.nowOpen();
+        Period txPeriod = Period.fromToInfinity(now);
 
-        Lineage.LineageId lId = new Lineage.LineageId(lineageId);
-        Period validPeriod = new Period(validFrom, validTo);
-        Affiliation prev = affiliationPort.getLineageHead(lId).orElseThrow(AffiliationLineageNotFoundException::new);
+        Affiliation prev = affiliationPort.getSnapshotOfRecord(lineageSharedId, versionSharedId, now)
+                .orElseThrow(AffiliationLineageNotFoundException::new);
 
-        Affiliation closedPrev = prev
-                .withLineage(prev.lineage().closeValid(validFrom))
-                .withVersion(prev.version().closeTx(validFrom))
+        Affiliation prevClose = prev
+                .withVersion(prev.version().closeTx(now))
                 .toBuilder()
                 .build();
-        affiliationPort.save(closedPrev);
+
+        affiliationPort.save(prevClose);
+
+        Version nextVersion = prev.version().next(txPeriod, command.versionDescription());
 
         Affiliation next = prev
-                .withLineage(prev.lineage().next(validPeriod))
-                .withVersion(prev.version().next(txPeriod, versionDescription))
+                .withVersion(nextVersion)
                 .toBuilder()
                 .college(college)
                 .major(major)
                 .build();
+
+        log.info("""
+                Amend Affiliation Lineage Local Variables
+                command={}
+                created=(
+                    prev={},
+                    prevClose={},
+                    next={})""", command, prev, prevClose, next);
 
         return AffiliationResultMapper.toResult(affiliationPort.save(next));
     }

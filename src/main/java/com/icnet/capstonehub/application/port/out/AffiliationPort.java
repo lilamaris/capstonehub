@@ -7,9 +7,10 @@ import java.util.List;
 import java.util.Optional;
 
 public interface AffiliationPort {
-    Optional<Affiliation> get(Affiliation.Id id);
-    Optional<Affiliation> getLineageHead(Lineage.LineageId lineageId);
-    List<Affiliation> getLineageSnapshotAtTx(Lineage.LineageId lineageId, LocalDate txAt);
-    List<Affiliation> getLineageSnapshotAtTxOnDate(Lineage.LineageId lineageId, LocalDate txAt, LocalDate on);
+    Optional<Affiliation> getSnapshotOfRecord(Lineage.SharedId lineageSharedId, Version.SharedId versionSharedId, LocalDate txAt);
+    Optional<Affiliation> getSnapshotOfRecord(Lineage.SharedId lineageSharedId, LocalDate validAt, LocalDate txAt);
+    List<Affiliation> getLineageOfSnapshot(Lineage.SharedId lineageSharedId, LocalDate txAt);
+    List<Affiliation> getVersionOfRecord(Lineage.SharedId lineageSharedId, Version.SharedId versionSharedId);
+    List<Affiliation> getVersionOfRecord(Lineage.SharedId lineageSharedId, LocalDate validAt);
     Affiliation save(Affiliation domain);
 }

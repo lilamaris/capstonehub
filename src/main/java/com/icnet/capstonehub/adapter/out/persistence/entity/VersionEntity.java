@@ -16,6 +16,9 @@ public class VersionEntity {
     @Id @GeneratedValue
     private UUID id;
 
+    @Column(name = "shared_id", nullable = false, updatable = false)
+    private UUID sharedId;
+
     @Column(name = "version_no", nullable = false, updatable = false)
     private Integer versionNo;
 
