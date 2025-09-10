@@ -12,6 +12,7 @@ public class AffiliationResultMapper {
                 .college(CollegeResultMapper.toResult(domain.college()))
                 .major(MajorResultMapper.toResult(domain.major()))
                 .version(VersionResultMapper.toResult(domain.version()))
+                .lineage(LineageResultMapper.toResult(domain.lineage()))
                 .build();
     }
 }

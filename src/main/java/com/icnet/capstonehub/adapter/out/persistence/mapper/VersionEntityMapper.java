@@ -10,7 +10,7 @@ import java.util.UUID;
 public class VersionEntityMapper {
     public static VersionEntity toEntity(Version domain) {
         UUID id = Optional.ofNullable(domain.id())
-                .map(UUID.class::cast)
+                .map(Version.Id::value)
                 .orElse(null);
 
         return VersionEntity.builder()

@@ -8,7 +8,7 @@ import java.util.Objects;
 public record Period(LocalDate from, LocalDate to) {
     public static Period nowOpen() {
         return Period.builder()
-                .to(LocalDate.now())
+                .from(LocalDate.now())
                 .build();
     }
 

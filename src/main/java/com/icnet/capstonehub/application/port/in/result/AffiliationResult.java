@@ -7,8 +7,8 @@ import java.util.UUID;
 @Builder
 public record AffiliationResult(
         UUID id,
-        UUID lineageId,
+        VersionResult version,
+        LineageResult lineage,
         CollegeResult college,
-        MajorResult major,
-        VersionResult version
+        MajorResult major
 ) {}

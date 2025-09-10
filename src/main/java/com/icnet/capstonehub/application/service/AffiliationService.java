@@ -67,7 +67,7 @@ public class AffiliationService implements AffiliationUseCase {
                 .build();
 
         log.info("""
-                Initialize Affiliation Lineage Local Variables
+                [Service] Initialize Affiliation Lineage Local Variables
                 request=(collegeId={}, majorId={}, validFrom={}, validTo={}, versionDescription={}),
                 created=(domain={})
                 """, collegeId, majorId, validFrom, validTo, versionDescription, domain);
@@ -125,6 +125,14 @@ public class AffiliationService implements AffiliationUseCase {
         Lineage.LineageId lId = new Lineage.LineageId(lineageId);
         Period validPeriod = new Period(validFrom, validTo);
         Affiliation prev = affiliationPort.getLineageHead(lId).orElseThrow(AffiliationLineageNotFoundException::new);
+
+        Affiliation closedPrev = prev
+                .withLineage(prev.lineage().closeValid(validFrom))
+                .withVersion(prev.version().closeTx(validFrom))
+                .toBuilder()
+                .build();
+        affiliationPort.save(closedPrev);
+
         Affiliation next = prev
                 .withLineage(prev.lineage().next(validPeriod))
                 .withVersion(prev.version().next(txPeriod, versionDescription))

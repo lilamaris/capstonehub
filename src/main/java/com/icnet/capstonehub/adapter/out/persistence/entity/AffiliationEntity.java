@@ -15,6 +15,14 @@ public class AffiliationEntity {
     @Id @GeneratedValue
     private UUID id;
 
+    @OneToOne(cascade = CascadeType.PERSIST, optional = false)
+    @JoinColumn(name = "version_id", nullable = false)
+    private VersionEntity version;
+
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "lineage_id", nullable = false)
+    private LineageEntity lineage;
+
     @Setter
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "college_id", nullable = false)
@@ -24,12 +32,4 @@ public class AffiliationEntity {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "major_id", nullable = false)
     private MajorEntity major;
-
-    @OneToOne(cascade = CascadeType.PERSIST, optional = false)
-    @JoinColumn(name = "version_id", nullable = false)
-    private VersionEntity version;
-
-    @ManyToOne
-    @JoinColumn(name = "lineage_id", nullable = false)
-    private LineageEntity lineage;
 }

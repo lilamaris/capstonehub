@@ -10,7 +10,7 @@ import java.util.UUID;
 public class LineageEntityMapper {
     public static LineageEntity toEntity(Lineage domain) {
         UUID id = Optional.ofNullable(domain.id())
-                .map(UUID.class::cast)
+                .map(Lineage.Id::value)
                 .orElse(null);
 
         return LineageEntity.builder()
@@ -29,6 +29,7 @@ public class LineageEntityMapper {
         return Lineage.builder()
                 .id(id)
                 .lineageId(lineageId)
+                .scope(entity.getScope())
                 .validPeriod(validPeriod)
                 .build();
     }

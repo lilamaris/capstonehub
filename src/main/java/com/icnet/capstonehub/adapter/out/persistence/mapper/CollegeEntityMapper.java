@@ -9,7 +9,7 @@ import java.util.UUID;
 public class CollegeEntityMapper {
     public static CollegeEntity toEntity(College domain) {
         UUID id = Optional.ofNullable(domain.id())
-                .map(UUID.class::cast)
+                .map(College.Id::value)
                 .orElse(null);
 
         return CollegeEntity.builder()

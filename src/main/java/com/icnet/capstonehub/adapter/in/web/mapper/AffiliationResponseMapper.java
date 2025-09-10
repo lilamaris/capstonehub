@@ -7,9 +7,10 @@ public class AffiliationResponseMapper {
     public static AffiliationResponse toResponse(AffiliationResult result) {
         return AffiliationResponse.builder()
                 .id(result.id())
+                .version(VersionResponseMapper.toResponse(result.version()))
+                .lineage(LineageResponseMapper.toResponse(result.lineage()))
                 .college(CollegeResponseMapper.toResponse(result.college()))
                 .major(MajorResponseMapper.toResponse(result.major()))
-                .version(VersionResponseMapper.toResponse(result.version()))
                 .build();
     }
 }

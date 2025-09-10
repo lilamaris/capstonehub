@@ -7,12 +7,10 @@ public class VersionResponseMapper {
     public static VersionResponse toResponse(VersionResult result) {
         return VersionResponse.builder()
                 .id(result.id())
-                .lineageId(result.lineageId())
-                .lineageScope(result.lineageScope())
-                .txFrom(result.txFrom())
-                .txTo(result.txTo())
                 .versionNo(result.versionNo())
                 .versionDescription(result.versionDescription())
+                .txFrom(result.txFrom())
+                .txTo(result.txTo())
                 .build();
     }
 }

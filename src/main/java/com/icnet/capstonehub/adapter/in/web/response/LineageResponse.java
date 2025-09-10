@@ -6,10 +6,10 @@ import java.time.LocalDate;
 import java.util.UUID;
 
 @Builder
-public record VersionResponse(
+public record LineageResponse(
     UUID id,
-    Integer versionNo,
-    String versionDescription,
-    LocalDate txFrom,
-    LocalDate txTo
+    UUID lineageId,
+    String lineageScope,
+    LocalDate validFrom,
+    LocalDate validTo
 ) {}

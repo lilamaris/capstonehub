@@ -4,6 +4,7 @@ import com.icnet.capstonehub.adapter.out.persistence.entity.AffiliationEntity;
 import com.icnet.capstonehub.adapter.out.persistence.entity.CollegeEntity;
 import com.icnet.capstonehub.adapter.out.persistence.entity.MajorEntity;
 import com.icnet.capstonehub.adapter.out.persistence.mapper.AffiliationEntityMapper;
+import com.icnet.capstonehub.adapter.out.persistence.mapper.LineageEntityMapper;
 import com.icnet.capstonehub.adapter.out.persistence.mapper.VersionEntityMapper;
 import com.icnet.capstonehub.adapter.out.persistence.repository.AffiliationRepository;
 import com.icnet.capstonehub.application.port.out.AffiliationPort;
@@ -55,6 +56,7 @@ public class AffiliationPersistenceAdapter implements AffiliationPort {
     public Affiliation save(Affiliation domain) {
         var entity = AffiliationEntity.builder()
                 .version(VersionEntityMapper.toEntity(domain.version()))
+                .lineage(LineageEntityMapper.toEntity(domain.lineage()))
                 .build();
 
         UUID collegeId = domain.college().id().value();

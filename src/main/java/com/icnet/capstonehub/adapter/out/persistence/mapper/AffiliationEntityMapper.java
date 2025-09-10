@@ -9,7 +9,7 @@ import java.util.UUID;
 public class AffiliationEntityMapper {
     public static AffiliationEntity toEntity(Affiliation domain) {
         UUID id = Optional.ofNullable(domain.id())
-                .map(UUID.class::cast)
+                .map(Affiliation.Id::value)
                 .orElse(null);
 
         return AffiliationEntity.builder()

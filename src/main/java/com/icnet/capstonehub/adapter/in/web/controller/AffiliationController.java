@@ -33,7 +33,6 @@ public class AffiliationController {
     public ResponseEntity<AffiliationResponse> createAffiliationLineage(
             @RequestBody AffiliationCreateLineageRequest request
     ) {
-        log.info("Create affiliation lineage command with request={}", request.toString());
         AffiliationResponse response = AffiliationResponseMapper.toResponse(
                 affiliationUseCase.initialAffiliationLineage(
                         request.collegeId(),
@@ -43,6 +42,11 @@ public class AffiliationController {
                         request.versionDescription()
                 )
         );
+
+        log.info("""
+                [Controller] Initialize Affiliation Lineage Local Variables
+                request={}
+                response={}""", request, response);
 
         return ResponseEntity.ok(response);
     }

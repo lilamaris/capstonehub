@@ -7,10 +7,10 @@ import java.util.UUID;
 
 @Builder(toBuilder = true)
 public record Version(
-        Period txPeriod,
         Id id,
         Integer versionNo,
-        String versionDescription
+        String versionDescription,
+        Period txPeriod
 ) {
     public record Id(UUID value) {}
 

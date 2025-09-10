@@ -9,7 +9,7 @@ import java.util.UUID;
 public class MajorEntityMapper {
     public static MajorEntity toEntity(Major domain) {
         UUID id = Optional.ofNullable(domain.id())
-                .map(UUID.class::cast)
+                .map(Major.Id::value)
                 .orElse(null);
 
         return MajorEntity.builder()
