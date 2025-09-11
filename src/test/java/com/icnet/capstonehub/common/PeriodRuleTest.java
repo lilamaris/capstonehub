@@ -15,7 +15,32 @@ public class PeriodRuleTest {
         LocalDate from = LocalDate.of(2024, 1, 31);
         LocalDate to = LocalDate.of(2024, 6, 1);
 
+        Period period = new Period(from, to);
+
+        assertThat(period).isInstanceOf(Period.class);
+        assertThat(period.from()).isEqualTo(from);
+        assertThat(period.to()).isEqualTo(to);
+    }
+
+    @Test
+    void should_create_period_fromToInfinity() {
+        LocalDate from = LocalDate.of(2024, 1, 31);
+
+        Period period = Period.fromToInfinity(from);
+
+        assertThat(period).isInstanceOf(Period.class);
+        assertThat(period.from()).isEqualTo(from);
+        assertThat(period.to()).isNull();
+    }
+
+    @Test
+    void should_create_period_pair() {
+        LocalDate from = LocalDate.of(2024, 1, 31);
+        LocalDate to = LocalDate.of(2024, 6, 1);
+
         Period period = Period.pair(from, to);
+
+        assertThat(period).isInstanceOf(Period.class);
         assertThat(period.from()).isEqualTo(from);
         assertThat(period.to()).isEqualTo(to);
     }
@@ -84,5 +109,54 @@ public class PeriodRuleTest {
         );
 
         assertThat(Period.isOverlap(a, b)).isTrue();
+    }
+
+    @Test
+    void should_detect_is_open_when_to_is_null() {
+        LocalDate from = LocalDate.of(2024, 1, 1);
+
+        Period period = Period.fromToInfinity(from);
+
+        assertThat(period.isOpen()).isTrue();
+    }
+
+    @Test
+    void should_detect_is_close_when_to_is_not_null() {
+        LocalDate from = LocalDate.of(2024, 1, 1);
+        LocalDate to = LocalDate.of(2024, 1, 5);
+
+        Period period = Period.pair(from, to);
+
+        assertThat(period.isOpen()).isFalse();
+    }
+
+    @Test
+    void should_create_close_period() {
+        LocalDate from = LocalDate.of(2024, 1, 1);
+        LocalDate closeTargetDate = LocalDate.of(2025, 1, 1);
+
+        Period period = Period.fromToInfinity(from);
+
+        Period closedPeriod = period.close(closeTargetDate);
+
+        assertThat(period.isOpen()).isTrue();
+        assertThat(closedPeriod.isOpen()).isFalse();
+
+        assertThat(period.to()).isNull();
+        assertThat(closedPeriod.to()).isEqualTo(closeTargetDate);
+    }
+
+    @Test
+    void should_throw_except_when_try_close_already_closed() {
+        LocalDate from = LocalDate.of(2024, 1, 1);
+        LocalDate to = LocalDate.of(2025, 1, 1);
+        LocalDate anotherTo = LocalDate.of(2025, 2, 1);
+
+        Period period = Period.pair(from, to);
+
+        assertThat(period.isOpen()).isFalse();
+        assertThatThrownBy(
+                () -> period.close(anotherTo)
+        ).isInstanceOf(IllegalStateException.class);
     }
 }
