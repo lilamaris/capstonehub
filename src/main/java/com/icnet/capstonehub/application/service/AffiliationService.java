@@ -109,13 +109,19 @@ public class AffiliationService implements AffiliationUseCase {
                 orElseThrow(AffiliationLineageNotFoundException::new);
 
         Period txPeriod = Period.fromToInfinity(now);
+        Lineage prevCloseLineage = prev.lineage().closeValid(command.validTo());
         Period validPeriod = Period.pair(command.validFrom(), command.validTo());
 
+        if (Period.isOverlap(prevCloseLineage.validPeriod(), validPeriod)) {
+            throw new IllegalArgumentException("New lineage valid period is overlap to previous lineage period");
+        }
+
         Affiliation prevClose = prev
-                .withLineage(prev.lineage().closeValid(command.validTo()))
+                .withLineage(prevCloseLineage)
                 .toBuilder()
                 .build();
         affiliationPort.save(prevClose);
+
 
         Version newVersion = Version.builder()
                 .sharedId(versionSharedId)
