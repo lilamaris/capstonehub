@@ -19,6 +19,13 @@ public record Period(LocalDate from, LocalDate to) {
                 .build();
     }
 
+    public static boolean isOverlap(Period a, Period b) {
+        LocalDate aTo = (a.to == null) ? LocalDate.MAX : a.to;
+        LocalDate bTo = (b.to == null) ? LocalDate.MAX : b.to;
+
+        return a.from.isBefore(bTo) && b.from.isBefore(aTo);
+    }
+
     @Builder
     public Period(LocalDate from, LocalDate to) {
         this.from = Objects.requireNonNull(from, "period.from must not null");
