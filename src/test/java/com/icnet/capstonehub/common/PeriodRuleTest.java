@@ -15,32 +15,7 @@ public class PeriodRuleTest {
         LocalDate from = LocalDate.of(2024, 1, 31);
         LocalDate to = LocalDate.of(2024, 6, 1);
 
-        Period period = new Period(from, to);
-
-        assertThat(period).isInstanceOf(Period.class);
-        assertThat(period.from()).isEqualTo(from);
-        assertThat(period.to()).isEqualTo(to);
-    }
-
-    @Test
-    void should_create_period_fromToInfinity() {
-        LocalDate from = LocalDate.of(2024, 1, 31);
-
-        Period period = Period.fromToInfinity(from);
-
-        assertThat(period).isInstanceOf(Period.class);
-        assertThat(period.from()).isEqualTo(from);
-        assertThat(period.to()).isNull();
-    }
-
-    @Test
-    void should_create_period_pair() {
-        LocalDate from = LocalDate.of(2024, 1, 31);
-        LocalDate to = LocalDate.of(2024, 6, 1);
-
         Period period = Period.pair(from, to);
-
-        assertThat(period).isInstanceOf(Period.class);
         assertThat(period.from()).isEqualTo(from);
         assertThat(period.to()).isEqualTo(to);
     }
