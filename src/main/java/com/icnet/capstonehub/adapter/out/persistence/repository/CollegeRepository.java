@@ -3,7 +3,7 @@ package com.icnet.capstonehub.adapter.out.persistence.repository;
 import com.icnet.capstonehub.adapter.out.persistence.entity.CollegeEntity;
 import com.icnet.capstonehub.adapter.out.persistence.mapper.CollegeEntityMapper;
 import com.icnet.capstonehub.application.port.out.CollegePort;
-import com.icnet.capstonehub.domain.College;
+import com.icnet.capstonehub.domain.model.College;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

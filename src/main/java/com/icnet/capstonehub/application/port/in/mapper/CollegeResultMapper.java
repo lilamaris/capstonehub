@@ -1,7 +1,7 @@
 package com.icnet.capstonehub.application.port.in.mapper;
 
 import com.icnet.capstonehub.application.port.in.result.CollegeResult;
-import com.icnet.capstonehub.domain.College;
+import com.icnet.capstonehub.domain.model.College;
 import org.springframework.stereotype.Component;
 
 @Component

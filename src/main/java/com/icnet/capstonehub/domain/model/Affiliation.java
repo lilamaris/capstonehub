@@ -1,4 +1,4 @@
-package com.icnet.capstonehub.domain;
+package com.icnet.capstonehub.domain.model;
 
 import lombok.Builder;
 import lombok.With;

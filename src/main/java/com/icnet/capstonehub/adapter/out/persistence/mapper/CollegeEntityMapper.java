@@ -1,7 +1,7 @@
 package com.icnet.capstonehub.adapter.out.persistence.mapper;
 
 import com.icnet.capstonehub.adapter.out.persistence.entity.CollegeEntity;
-import com.icnet.capstonehub.domain.College;
+import com.icnet.capstonehub.domain.model.College;
 
 import java.util.Optional;
 import java.util.UUID;

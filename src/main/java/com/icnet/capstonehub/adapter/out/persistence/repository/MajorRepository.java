@@ -3,7 +3,7 @@ package com.icnet.capstonehub.adapter.out.persistence.repository;
 import com.icnet.capstonehub.adapter.out.persistence.entity.MajorEntity;
 import com.icnet.capstonehub.adapter.out.persistence.mapper.MajorEntityMapper;
 import com.icnet.capstonehub.application.port.out.MajorPort;
-import com.icnet.capstonehub.domain.Major;
+import com.icnet.capstonehub.domain.model.Major;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

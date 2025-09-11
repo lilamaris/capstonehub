@@ -12,7 +12,7 @@ import com.icnet.capstonehub.application.port.in.result.AffiliationResult;
 import com.icnet.capstonehub.application.port.out.AffiliationPort;
 import com.icnet.capstonehub.application.port.out.CollegePort;
 import com.icnet.capstonehub.application.port.out.MajorPort;
-import com.icnet.capstonehub.domain.*;
+import com.icnet.capstonehub.domain.model.*;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

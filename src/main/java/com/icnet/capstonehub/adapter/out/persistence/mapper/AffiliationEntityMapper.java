@@ -1,7 +1,7 @@
 package com.icnet.capstonehub.adapter.out.persistence.mapper;
 
 import com.icnet.capstonehub.adapter.out.persistence.entity.AffiliationEntity;
-import com.icnet.capstonehub.domain.Affiliation;
+import com.icnet.capstonehub.domain.model.Affiliation;
 
 import java.util.Optional;
 import java.util.UUID;

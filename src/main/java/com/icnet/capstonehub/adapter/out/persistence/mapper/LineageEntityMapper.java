@@ -1,8 +1,8 @@
 package com.icnet.capstonehub.adapter.out.persistence.mapper;
 
 import com.icnet.capstonehub.adapter.out.persistence.entity.LineageEntity;
-import com.icnet.capstonehub.domain.Lineage;
-import com.icnet.capstonehub.domain.Period;
+import com.icnet.capstonehub.domain.model.Lineage;
+import com.icnet.capstonehub.domain.model.Period;
 
 import java.util.Optional;
 import java.util.UUID;

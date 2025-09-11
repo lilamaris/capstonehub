@@ -5,7 +5,7 @@ import com.icnet.capstonehub.application.port.in.command.CollegeCreateCommand;
 import com.icnet.capstonehub.application.port.in.mapper.CollegeResultMapper;
 import com.icnet.capstonehub.application.port.in.result.CollegeResult;
 import com.icnet.capstonehub.application.port.out.CollegePort;
-import com.icnet.capstonehub.domain.College;
+import com.icnet.capstonehub.domain.model.College;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

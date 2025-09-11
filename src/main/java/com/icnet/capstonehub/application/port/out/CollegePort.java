@@ -1,6 +1,6 @@
 package com.icnet.capstonehub.application.port.out;
 
-import com.icnet.capstonehub.domain.College;
+import com.icnet.capstonehub.domain.model.College;
 
 import java.util.List;
 import java.util.Optional;

@@ -1,7 +1,7 @@
 package com.icnet.capstonehub.application.port.in.mapper;
 
 import com.icnet.capstonehub.application.port.in.result.MajorResult;
-import com.icnet.capstonehub.domain.Major;
+import com.icnet.capstonehub.domain.model.Major;
 import org.springframework.stereotype.Component;
 
 @Component

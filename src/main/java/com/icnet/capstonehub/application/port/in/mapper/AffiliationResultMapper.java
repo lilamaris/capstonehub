@@ -1,7 +1,7 @@
 package com.icnet.capstonehub.application.port.in.mapper;
 
 import com.icnet.capstonehub.application.port.in.result.AffiliationResult;
-import com.icnet.capstonehub.domain.Affiliation;
+import com.icnet.capstonehub.domain.model.Affiliation;
 import org.springframework.stereotype.Component;
 
 @Component

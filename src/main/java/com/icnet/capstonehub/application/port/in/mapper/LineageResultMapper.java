@@ -1,7 +1,7 @@
 package com.icnet.capstonehub.application.port.in.mapper;
 
 import com.icnet.capstonehub.application.port.in.result.LineageResult;
-import com.icnet.capstonehub.domain.Lineage;
+import com.icnet.capstonehub.domain.model.Lineage;
 
 public class LineageResultMapper {
     public static LineageResult toResult(Lineage domain) {

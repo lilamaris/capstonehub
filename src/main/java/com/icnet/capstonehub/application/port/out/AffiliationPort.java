@@ -1,6 +1,8 @@
 package com.icnet.capstonehub.application.port.out;
 
-import com.icnet.capstonehub.domain.*;
+import com.icnet.capstonehub.domain.model.Affiliation;
+import com.icnet.capstonehub.domain.model.Lineage;
+import com.icnet.capstonehub.domain.model.Version;
 
 import java.time.LocalDate;
 import java.util.List;

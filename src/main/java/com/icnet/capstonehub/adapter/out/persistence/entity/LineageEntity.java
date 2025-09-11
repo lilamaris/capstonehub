@@ -1,6 +1,6 @@
 package com.icnet.capstonehub.adapter.out.persistence.entity;
 
-import com.icnet.capstonehub.domain.Lineage;
+import com.icnet.capstonehub.domain.model.Lineage;
 import jakarta.persistence.*;
 import lombok.*;
 

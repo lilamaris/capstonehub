@@ -1,7 +1,7 @@
 package com.icnet.capstonehub.adapter.out.persistence.mapper;
 
 import com.icnet.capstonehub.adapter.out.persistence.entity.MajorEntity;
-import com.icnet.capstonehub.domain.Major;
+import com.icnet.capstonehub.domain.model.Major;
 
 import java.util.Optional;
 import java.util.UUID;

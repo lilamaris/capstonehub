@@ -1,8 +1,8 @@
 package com.icnet.capstonehub.adapter.out.persistence.mapper;
 
 import com.icnet.capstonehub.adapter.out.persistence.entity.VersionEntity;
-import com.icnet.capstonehub.domain.Period;
-import com.icnet.capstonehub.domain.Version;
+import com.icnet.capstonehub.domain.model.Period;
+import com.icnet.capstonehub.domain.model.Version;
 
 import java.util.Optional;
 import java.util.UUID;

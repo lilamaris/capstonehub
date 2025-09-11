@@ -5,7 +5,7 @@ import com.icnet.capstonehub.application.port.in.command.MajorCreateCommand;
 import com.icnet.capstonehub.application.port.in.mapper.MajorResultMapper;
 import com.icnet.capstonehub.application.port.in.result.MajorResult;
 import com.icnet.capstonehub.application.port.out.MajorPort;
-import com.icnet.capstonehub.domain.Major;
+import com.icnet.capstonehub.domain.model.Major;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
