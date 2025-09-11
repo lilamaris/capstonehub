@@ -1,4 +1,4 @@
-package com.icnet.capstonehub.common;
+package com.icnet.capstonehub.unit.domain;
 
 import com.icnet.capstonehub.domain.model.Period;
 import org.junit.jupiter.api.Test;
@@ -8,7 +8,7 @@ import java.time.LocalDate;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-public class PeriodRuleTest {
+public class PeriodTest {
 
     @Test
     void should_create_period() {
