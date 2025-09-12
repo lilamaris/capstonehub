@@ -19,7 +19,7 @@ public class VersionTest {
         assertThat(v1.sharedId()).isNotNull();
         assertThat(v1.versionNo()).isEqualTo(1);
         assertThat(v1.versionDescription()).isEqualTo("Initial version");
-        assertThat(v1.txPeriod().isOpen()).isTrue();
+        assertThat(v1.isHead()).isTrue();
     }
 
     @Test
@@ -44,9 +44,9 @@ public class VersionTest {
         var nextFrom = LocalDate.of(2024, 2, 1);
         Version v2 = v1.next(nextFrom, "new version");
 
-        v1 = v1.closeTx(nextFrom);
+        v1 = v1.close(nextFrom);
 
-        assertThat(v1.isTxValid()).isFalse();
+        assertThat(v1.isHead()).isFalse();
         assertThat(v1.txPeriod().to()).isEqualTo(nextFrom);
         assertThat(v2.txPeriod().from()).isEqualTo(nextFrom);
         assertThat(Period.isOverlap(v1.txPeriod(), v2.txPeriod())).isFalse();
@@ -58,12 +58,12 @@ public class VersionTest {
         Version v1 = Version.initial(txFrom);
 
         var nextFrom = LocalDate.now();
-        Version closedV1 = v1.closeTx(nextFrom);
+        Version closedV1 = v1.close(nextFrom);
 
-        assertThat(closedV1.isTxValid()).isFalse();
+        assertThat(closedV1.isHead()).isFalse();
 
         assertThatThrownBy(
-                () -> closedV1.closeTx(nextFrom.plusDays(1))
+                () -> closedV1.close(nextFrom.plusDays(1))
         ).isInstanceOf(IllegalStateException.class);
     }
 }

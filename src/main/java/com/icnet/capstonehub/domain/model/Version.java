@@ -26,32 +26,22 @@ public record Version(
                 .versionDescription("Initial version")
                 .build();
     }
-
-    public boolean isTxValid() {
-        return this.txPeriod.isOpen();
-    }
-
-    public Version closeTx(LocalDate txTo) {
-        if (!this.txPeriod.isOpen()) {
+    public Version close(LocalDate txTo) {
+        if (!this.isHead()) {
             throw new IllegalStateException("Already closed version cannot be closed again");
         }
-        if (!txTo.isAfter(this.txPeriod.from())) {
-            throw new IllegalArgumentException("txTo must be after txFrom");
-        }
-        Period close = txPeriod.close(txTo);
+        var closedTxPeriod = Period.pair(txPeriod.from(), txTo);
         return this.toBuilder()
-                .txPeriod(close)
+                .txPeriod(closedTxPeriod)
                 .build();
     }
 
     public Version next(LocalDate txFrom, String versionDescription) {
-        if (!this.txPeriod.isOpen()) {
-            throw new IllegalStateException("Next version required current version to be open");
+        if (this.txPeriod.from().isAfter(txFrom)) {
+            throw new IllegalStateException("Next version tx period is must after the previous tx period");
         }
-        if (txFrom.isBefore(this.txPeriod.from())) {
-            throw new IllegalArgumentException("next.txFrom cannot be before current.txFrom");
-        }
-        Period txPeriod = Period.fromToInfinity(txFrom);
+        var txPeriod = Period.fromToInfinity(txFrom);
+
         return Version.builder()
                 .sharedId(sharedId)
                 .versionNo(versionNo + 1)
@@ -59,4 +49,9 @@ public record Version(
                 .versionDescription(versionDescription)
                 .build();
     }
+
+    public boolean isHead() {
+        return this.txPeriod.isOpen();
+    }
+
 }
