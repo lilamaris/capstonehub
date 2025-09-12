@@ -1,18 +1,16 @@
 package com.icnet.capstonehub.unit.domain;
 
 import com.icnet.capstonehub.domain.model.Lineage;
-import com.icnet.capstonehub.domain.model.Period;
 import org.junit.jupiter.api.Test;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class LineageTest {
     @Test
     void should_create_new_lineage() {
-        var validFrom = LocalDate.of(2024, 1, 1);
+        var validFrom = LocalDateTime.of(2024, 6, 1, 0, 0, 0);
         Lineage l1 = Lineage.initial(Lineage.Scope.AFFILIATION, validFrom);
 
         assertThat(l1).isInstanceOf(Lineage.class);
@@ -23,72 +21,32 @@ public class LineageTest {
 
     @Test
     void should_create_next_lineage() {
-        var validFrom = LocalDate.of(2024, 1, 1);
+        var validFrom = LocalDateTime.of(2024, 6, 1, 0, 0, 0);
         Lineage l1 = Lineage.initial(Lineage.Scope.AFFILIATION, validFrom);
 
-        var nextValidFrom = LocalDate.of(2024, 6, 1);
-        Lineage l2 = l1.next(nextValidFrom);
+        var validTo = LocalDateTime.of(2024, 7, 1, 0, 0, 0);
+        Lineage.Transition transition = l1.migrate(validTo);
 
-        assertThat(l2).isInstanceOf(Lineage.class);
+        var closed = transition.closed();
+        var next = transition.next();
+
+        assertThat(next).isInstanceOf(Lineage.class);
+        assertThat(closed.sharedId()).isEqualTo(next.sharedId());
+        assertThat(closed.validPeriod().isOverlap(next.validPeriod())).isFalse();
     }
 
     @Test
-    void should_next_lineage_retain_previous_sharedId() {
-        var validFrom = LocalDate.of(2024, 1, 1);
+    void after_transition_only_one_head_is_valid() {
+        var validFrom = LocalDateTime.of(2024, 6, 1, 0, 0, 0);
         Lineage l1 = Lineage.initial(Lineage.Scope.AFFILIATION, validFrom);
 
-        var nextValidFrom = LocalDate.of(2024, 6, 1);
-        Lineage l2 = l1.next(nextValidFrom);
+        var validTo = LocalDateTime.of(2024, 7, 1, 0, 0, 0);
+        var transition = l1.migrate(validTo);
 
-        assertThat(l2.sharedId()).isEqualTo(l1.sharedId());
-    }
+        var closed = transition.closed();
+        var next = transition.next();
 
-    @Test
-    void should_next_lineage_is_must_after_the_previous_validPeriod() {
-        var validFrom = LocalDate.of(2024, 6, 1);
-        Lineage l1 = Lineage.initial(Lineage.Scope.AFFILIATION, validFrom);
-
-        var nextValidFrom = LocalDate.of(2024, 3, 1);
-        assertThatThrownBy(
-                () -> l1.next(nextValidFrom)
-        ).isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @Test
-    void should_close_lineage_when_initial_next_lineage() {
-        var validFrom = LocalDate.of(2024, 3, 1);
-        Lineage l1 = Lineage.initial(Lineage.Scope.AFFILIATION, validFrom);
-
-        var nextValidFrom = LocalDate.of(2024, 3, 1);
-        l1 = l1.close(nextValidFrom);
-        Lineage l2 = l1.next(nextValidFrom);
-
-        assertThat(l1.isHead()).isFalse();
-        assertThat(l2.isHead()).isTrue();
-        assertThat(Period.isOverlap(l1.validPeriod(), l2.validPeriod())).isFalse();
-    }
-
-    @Test
-    void should_throw_except_when_close_before_from() {
-        var validFrom = LocalDate.of(2024, 3, 1);
-        Lineage l1 = Lineage.initial(Lineage.Scope.AFFILIATION, validFrom);
-
-        var nextValidFrom = LocalDate.of(2024, 2, 1);
-        assertThatThrownBy(
-                () -> l1.close(nextValidFrom)
-        ).isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @Test
-    void should_throw_except_when_initial_next_that_already_closed() {
-        var validFrom = LocalDate.of(2024, 3, 1);
-        Lineage l1 = Lineage.initial(Lineage.Scope.AFFILIATION, validFrom);
-
-        var nextValidFrom = LocalDate.of(2024, 3, 1);
-        Lineage closed = l1.close(nextValidFrom);
-
-        assertThatThrownBy(
-                () -> closed.close(nextValidFrom.plusDays(1))
-        ).isInstanceOf(IllegalStateException.class);
+        assertThat(closed.isHead()).isFalse();
+        assertThat(next.isHead()).isTrue();
     }
 }

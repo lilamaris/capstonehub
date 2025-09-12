@@ -3,7 +3,7 @@ package com.icnet.capstonehub.adapter.out.persistence.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
@@ -26,8 +26,8 @@ public class VersionEntity {
     private String versionDescription;
 
     @Column(name = "tx_from", nullable = false)
-    private LocalDate txFrom;
+    private LocalDateTime txFrom;
 
     @Column(name ="tx_to")
-    private LocalDate txTo;
+    private LocalDateTime txTo;
 }

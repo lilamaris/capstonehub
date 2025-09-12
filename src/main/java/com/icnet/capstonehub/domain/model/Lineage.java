@@ -2,7 +2,7 @@ package com.icnet.capstonehub.domain.model;
 
 import lombok.Builder;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Builder(toBuilder = true)
@@ -16,9 +16,11 @@ public record Lineage(
     public record SharedId(UUID value) {}
     public enum Scope { AFFILIATION, COURSE }
 
-    public static Lineage initial(Scope scope, LocalDate validFrom) {
+    public record Transition(Lineage closed, Lineage next) {}
+
+    public static Lineage initial(Scope scope, LocalDateTime validFrom) {
         var lineageSharedId = new SharedId(UUID.randomUUID());
-        var validPeriod = Period.fromToInfinity(validFrom);
+        var validPeriod = Period.fromToMax(validFrom);
         return Lineage.builder()
                 .sharedId(lineageSharedId)
                 .scope(scope)
@@ -26,31 +28,15 @@ public record Lineage(
                 .build();
     }
 
-    public Lineage close(LocalDate validTo) {
-        if (!isHead()) {
-            throw new IllegalStateException("Cannot close that already been closed.");
-        }
-        var closedValidPeriod = Period.pair(validPeriod.from(), validTo);
-
-        return this.toBuilder()
-                .validPeriod(closedValidPeriod)
-                .build();
-    }
-
-    public Lineage next(LocalDate validFrom) {
-        if (this.validPeriod.from().isAfter(validFrom)) {
-            throw new IllegalArgumentException("Next lineage valid period is must after the previous valid period");
-        }
-        var validPeriod = Period.fromToInfinity(validFrom);
-
-        return Lineage.builder()
-                .sharedId(sharedId)
-                .scope(scope)
-                .validPeriod(validPeriod)
-                .build();
-    }
-
     public boolean isHead() {
         return this.validPeriod.isOpen();
+    }
+
+    public Transition migrate(LocalDateTime validTo) {
+        var split = this.validPeriod.splitAt(validTo);
+        var closed = this.toBuilder().validPeriod(split.previous()).build();
+        var next = this.toBuilder().validPeriod(split.next()).build();
+
+        return new Transition(closed, next);
     }
 }

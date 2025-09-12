@@ -4,7 +4,7 @@ import com.icnet.capstonehub.domain.model.Lineage;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
@@ -25,8 +25,8 @@ public class LineageEntity {
     private Lineage.Scope scope;
 
     @Column(name = "valid_from", nullable = false)
-    private LocalDate validFrom;
+    private LocalDateTime validFrom;
 
     @Column(name = "valid_to")
-    private LocalDate validTo;
+    private LocalDateTime validTo;
 }
