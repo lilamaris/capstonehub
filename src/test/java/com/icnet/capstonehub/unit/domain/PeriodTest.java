@@ -143,8 +143,7 @@ public class PeriodTest {
     void should_detect_overlap_with_open_period() {
         LocalDateTime from = LocalDateTime.of(2024, 1, 1, 0, 0,  0);
         LocalDateTime mid = LocalDateTime.of(2024, 6, 1, 0, 0, 0);
-        LocalDateTime to = LocalDateTime.of(2024,
-12, 1, 0, 0, 0);
+        LocalDateTime to = LocalDateTime.of(2024, 12, 1, 0, 0, 0);
 
         Period a = Period.fromToInfinity(from);
         Period b = Period.pair(from, mid);
