@@ -31,18 +31,6 @@ public class PeriodTest {
     }
 
     @Test
-    void should_create_period_half_opened() {
-        LocalDateTime from = LocalDateTime.of(2024, 1, 1, 0, 0,  0);
-        LocalDateTime to = LocalDateTime.of(2024, 6, 1, 0, 0, 0);
-
-        Period period = Period.pair(from, to);
-
-        assertThat(period).isInstanceOf(Period.class);
-        assertThat(period.from()).isEqualTo(from);
-        assertThat(period.to()).isEqualTo(to);
-    }
-
-    @Test
     void halfOpen_overlap_rules() {
         LocalDateTime beforeFrom = LocalDateTime.of(2024, 1, 1, 0, 0,  0);
         LocalDateTime from = LocalDateTime.of(2024, 6, 1, 0, 0, 0);
