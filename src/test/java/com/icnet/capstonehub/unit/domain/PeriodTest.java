@@ -169,4 +169,20 @@ public class PeriodTest {
         var split = period.splitAt(targetAt);
         assertThat(split).isInstanceOf(Period.Split.class);
     }
+
+    @Test
+    void should_split_throw_invalid_argument() {
+        LocalDateTime from = LocalDateTime.of(2024, 6, 1, 0, 0, 0);
+        LocalDateTime at = LocalDateTime.of(2024, 1, 1, 0, 0, 0);
+
+        Period period = Period.pick(from);
+
+        assertThatThrownBy(
+                () -> period.splitAt(at)
+        ).isInstanceOf(IllegalArgumentException.class);
+
+        assertThatThrownBy(
+                () -> period.splitAt(from)
+        ).isInstanceOf(IllegalArgumentException.class);
+    }
 }

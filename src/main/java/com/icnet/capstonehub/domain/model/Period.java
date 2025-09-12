@@ -28,6 +28,7 @@ public record Period(LocalDateTime from, LocalDateTime to) {
     }
 
     public static Period pair(LocalDateTime from, LocalDateTime to) {
+        if (from.isEqual(to)) throw new IllegalArgumentException("cannot create a pair where 'from' and 'to' value are the same. Instead, use pick(LocalDateTime from).");
         return Period.builder()
                 .from(from)
                 .to(to)
