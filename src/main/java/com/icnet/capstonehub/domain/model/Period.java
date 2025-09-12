@@ -20,7 +20,7 @@ public record Period(LocalDateTime from, LocalDateTime to) {
 
     }
 
-    public static Period fromToInfinity(LocalDateTime from) {
+    public static Period fromToMax(LocalDateTime from) {
         return Period.builder()
                 .from(from)
                 .to(LocalDateTime.MAX)

@@ -94,13 +94,13 @@ public class PeriodTest {
     }
 
     @Test
-    void open_end_should_behave_as_infinite() {
-        LocalDateTime from    = LocalDateTime.of(2024, 6, 1, 0, 0);
-        LocalDateTime later   = LocalDateTime.of(2024, 8, 1, 0, 0);
+    void open_end_should_behave_as_max() {
+        LocalDateTime from = LocalDateTime.of(2024, 6, 1, 0, 0);
+        LocalDateTime later = LocalDateTime.of(2024, 8, 1, 0, 0);
         LocalDateTime laterTo = LocalDateTime.of(2024, 9, 1, 0, 0);
 
-        Period infinite = Period.fromToInfinity(from);
-        assertOverlap(infinite, Period.pair(later, laterTo));
+        Period max = Period.fromToMax(from);
+        assertOverlap(max, Period.pair(later, laterTo));
     }
 
     @Test
@@ -145,7 +145,7 @@ public class PeriodTest {
         LocalDateTime mid = LocalDateTime.of(2024, 6, 1, 0, 0, 0);
         LocalDateTime to = LocalDateTime.of(2024, 12, 1, 0, 0, 0);
 
-        Period a = Period.fromToInfinity(from);
+        Period a = Period.fromToMax(from);
         Period b = Period.pair(from, mid);
         Period c = Period.pair(mid, to);
 
@@ -156,9 +156,25 @@ public class PeriodTest {
         assertThat(a.isOverlap(c)).isTrue();
     }
 
+    @Test
+    void should_split_open_to_max_period() {
+        LocalDateTime from = LocalDateTime.of(2024, 1, 1, 0, 0, 0);
+        LocalDateTime targetAt = LocalDateTime.of(2024, 3, 1, 0, 0, 0);
+
+        Period period = Period.fromToMax(from);
+
+        var split = period.splitAt(targetAt);
+        var previous = split.previous();
+        var next = split.next();
+
+        assertThat(split).isInstanceOf(Period.Split.class);
+        assertNoOverlap(previous, next);
+        assertThat(previous.to()).isEqualTo(next.from());
+        assertThat(next.to()).isEqualTo(LocalDateTime.MAX);
+    }
 
     @Test
-    void should_period_split_two_periods() {
+    void should_split_both_side_closed_period() {
         LocalDateTime from = LocalDateTime.of(2024, 1, 1, 0, 0, 0);
         LocalDateTime to = LocalDateTime.of(2024, 6, 1, 0, 0, 0);
 
@@ -166,7 +182,12 @@ public class PeriodTest {
         Period period = Period.pair(from, to);
 
         var split = period.splitAt(targetAt);
+        var previous = split.previous();
+        var next = split.next();
+
         assertThat(split).isInstanceOf(Period.Split.class);
+        assertNoOverlap(previous, next);
+        assertThat(previous.to()).isEqualTo(next.from());
     }
 
     @Test
