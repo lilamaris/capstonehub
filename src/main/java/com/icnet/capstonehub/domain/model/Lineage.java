@@ -45,4 +45,12 @@ public record Lineage(
 
         return new Transition(previous, next);
     }
+
+    public Lineage expire(LocalDateTime validTo) {
+        var closedPeriod = Period.pair(this.validPeriod().from(), validTo);
+
+        return this.toBuilder()
+                .validPeriod(closedPeriod)
+                .build();
+    }
 }
