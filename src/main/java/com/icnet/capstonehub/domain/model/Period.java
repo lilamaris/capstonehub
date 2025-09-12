@@ -2,53 +2,54 @@ package com.icnet.capstonehub.domain.model;
 
 import lombok.Builder;
 
-import java.time.LocalDate;
-import java.util.Objects;
+import java.time.LocalDateTime;
+import java.util.Optional;
 
-public record Period(LocalDate from, LocalDate to) {
-    public static Period fromToInfinity(LocalDate from) {
+public record Period(LocalDateTime from, LocalDateTime to) {
+    public record Split(Period previous, Period next) {}
+
+    @Builder
+    public Period {
+        var f = Optional.ofNullable(from)
+                .orElseThrow(() -> new NullPointerException("from is must be not null"));
+        var t = Optional.ofNullable(to)
+                .orElseThrow(() -> new NullPointerException("from is must be not null"));
+        if (t.isBefore(f)) {
+            throw new IllegalArgumentException("'to' is must be after than 'from'");
+        }
+
+    }
+
+    public static Period fromToInfinity(LocalDateTime from) {
         return Period.builder()
                 .from(from)
+                .to(LocalDateTime.MAX)
                 .build();
     }
 
-    public static Period pair(LocalDate from, LocalDate to) {
+    public static Period pair(LocalDateTime from, LocalDateTime to) {
         return Period.builder()
                 .from(from)
                 .to(to)
                 .build();
     }
 
-    public static boolean isOverlap(Period a, Period b) {
-        LocalDate aTo = (a.to == null) ? LocalDate.MAX : a.to;
-        LocalDate bTo = (b.to == null) ? LocalDate.MAX : b.to;
-
-        return a.from.isBefore(bTo) && b.from.isBefore(aTo);
+    public static Period pick(LocalDateTime from) {
+        return pair(from, from.plusNanos(1));
     }
 
-    @Builder
-    public Period(LocalDate from, LocalDate to) {
-        this.from = Objects.requireNonNull(from, "period.from must not null");
-
-        if (to != null && to.isBefore(from)) {
-            throw new IllegalArgumentException("period.to must be >= period.from");
-        }
-
-        this.to = to;
+    public boolean isOverlap(Period b) {
+        return from.isBefore(b.to) && to.isAfter(b.from);
     }
 
     public boolean isOpen() {
-        return to == null;
+        return to == LocalDateTime.MAX;
     }
 
-    public Period close(LocalDate to) {
-        if (!this.isOpen()) {
-            throw new IllegalStateException(String.format("Already closed period=(from=%s, to=%s)", this.from, this.to));
-        }
+    public Split splitAt(LocalDateTime at) {
+        var previous = Period.pair(from, at);
+        var next = Period.pair(at, to);
 
-        return Period.builder()
-                .from(this.from)
-                .to(to)
-                .build();
+        return new Split(previous, next);
     }
 }
