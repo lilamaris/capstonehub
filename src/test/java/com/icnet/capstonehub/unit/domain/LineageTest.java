@@ -14,6 +14,7 @@ public class LineageTest {
         Lineage l1 = Lineage.initial(Lineage.Scope.AFFILIATION, validFrom);
 
         assertThat(l1).isInstanceOf(Lineage.class);
+        assertThat(l1.id()).isNotNull();
         assertThat(l1.sharedId()).isNotNull();
         assertThat(l1.scope()).isEqualTo(Lineage.Scope.AFFILIATION);
         assertThat(l1.isHead()).isTrue();
@@ -27,26 +28,17 @@ public class LineageTest {
         var validTo = LocalDateTime.of(2024, 7, 1, 0, 0, 0);
         Lineage.Transition transition = l1.migrate(validTo);
 
-        var closed = transition.closed();
+        var previous = transition.previous();
         var next = transition.next();
 
         assertThat(next).isInstanceOf(Lineage.class);
-        assertThat(closed.sharedId()).isEqualTo(next.sharedId());
-        assertThat(closed.validPeriod().isOverlap(next.validPeriod())).isFalse();
-    }
+        assertThat(previous.id()).isNotEqualTo(next.id());
+        assertThat(previous.sharedId()).isEqualTo(next.sharedId());
+        assertThat(previous.isHead()).isFalse();
 
-    @Test
-    void after_transition_only_one_head_is_valid() {
-        var validFrom = LocalDateTime.of(2024, 6, 1, 0, 0, 0);
-        Lineage l1 = Lineage.initial(Lineage.Scope.AFFILIATION, validFrom);
-
-        var validTo = LocalDateTime.of(2024, 7, 1, 0, 0, 0);
-        var transition = l1.migrate(validTo);
-
-        var closed = transition.closed();
-        var next = transition.next();
-
-        assertThat(closed.isHead()).isFalse();
         assertThat(next.isHead()).isTrue();
+
+        assertThat(previous.validPeriod().isOverlap(next.validPeriod())).isFalse();
+        assertThat(previous.validPeriod().to()).isEqualTo(next.validPeriod().from());
     }
 }

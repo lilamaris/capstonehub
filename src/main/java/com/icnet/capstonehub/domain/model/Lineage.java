@@ -16,12 +16,14 @@ public record Lineage(
     public record SharedId(UUID value) {}
     public enum Scope { AFFILIATION, COURSE }
 
-    public record Transition(Lineage closed, Lineage next) {}
+    public record Transition(Lineage previous, Lineage next) {}
 
     public static Lineage initial(Scope scope, LocalDateTime validFrom) {
+        var id = new Id(UUID.randomUUID());
         var lineageSharedId = new SharedId(UUID.randomUUID());
         var validPeriod = Period.fromToMax(validFrom);
         return Lineage.builder()
+                .id(id)
                 .sharedId(lineageSharedId)
                 .scope(scope)
                 .validPeriod(validPeriod)
@@ -33,10 +35,14 @@ public record Lineage(
     }
 
     public Transition migrate(LocalDateTime validTo) {
+        var newId = new Id(UUID.randomUUID());
         var split = this.validPeriod.splitAt(validTo);
-        var closed = this.toBuilder().validPeriod(split.previous()).build();
-        var next = this.toBuilder().validPeriod(split.next()).build();
+        var previous = this.toBuilder().validPeriod(split.previous()).build();
+        var next = this.toBuilder()
+                .id(newId)
+                .validPeriod(split.next())
+                .build();
 
-        return new Transition(closed, next);
+        return new Transition(previous, next);
     }
 }
