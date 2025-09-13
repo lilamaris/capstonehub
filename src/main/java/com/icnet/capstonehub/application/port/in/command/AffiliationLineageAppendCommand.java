@@ -2,7 +2,7 @@ package com.icnet.capstonehub.application.port.in.command;
 
 import lombok.Builder;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Builder
@@ -10,7 +10,6 @@ public record AffiliationLineageAppendCommand(
         UUID lineageSharedId,
         UUID collegeId,
         UUID majorId,
-        LocalDate validFrom,
-        LocalDate validTo,
+        LocalDateTime validAt,
         String versionDescription
 ) {}

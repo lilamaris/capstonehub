@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -26,7 +26,7 @@ public interface AffiliationRepository extends JpaRepository<AffiliationEntity, 
     Optional<AffiliationEntity> findSnapshotOfRecord(
             @Param("lineageSharedId") UUID lineageSharedId,
             @Param("versionSharedId") UUID versionSharedId,
-            @Param("txAt") LocalDate txAt
+            @Param("txAt") LocalDateTime txAt
     );
 
     @Query("""
@@ -42,8 +42,8 @@ public interface AffiliationRepository extends JpaRepository<AffiliationEntity, 
                 AND (v.txTo IS NULL OR v.txTo > :txAt)""")
     Optional<AffiliationEntity> findSnapshotOfRecord(
             @Param("lineageSharedId") UUID lineageSharedId,
-            @Param("validAt") LocalDate validAt,
-            @Param("txAt") LocalDate txAt
+            @Param("validAt") LocalDateTime validAt,
+            @Param("txAt") LocalDateTime txAt
     );
 
     @Query("""
@@ -70,7 +70,7 @@ public interface AffiliationRepository extends JpaRepository<AffiliationEntity, 
                 AND (l.validTo IS NULL OR l.validTo > :validAt)""")
     List<AffiliationEntity> findVersionOfRecord(
             @Param("lineageSharedId") UUID lineageSharedId,
-            @Param("validAt") LocalDate validAt
+            @Param("validAt") LocalDateTime validAt
     );
 
     @Query("""
@@ -84,6 +84,6 @@ public interface AffiliationRepository extends JpaRepository<AffiliationEntity, 
                 AND (v.txTo IS NULL OR v.txTo > :txAt)""")
     List<AffiliationEntity> findLineageOfSnapshot(
             @Param("lineageSharedId") UUID lineageSharedId,
-            @Param("txAt") LocalDate txAt
+            @Param("txAt") LocalDateTime txAt
     );
 }

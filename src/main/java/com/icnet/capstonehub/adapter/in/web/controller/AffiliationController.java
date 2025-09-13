@@ -43,9 +43,7 @@ public class AffiliationController {
         var command = AffiliationLineageInitialCommand.builder()
                 .collegeId(request.collegeId())
                 .majorId(request.majorId())
-                .validFrom(request.validFrom())
-                .validTo(request.validTo())
-                .versionDescription(request.versionDescription())
+                .validAt(request.validAt())
                 .build();
 
         var response = AffiliationResponseMapper.toResponse(affiliationUseCase.initialAffiliationLineage(command));
@@ -58,7 +56,7 @@ public class AffiliationController {
     }
 
     @PostMapping("/lineage/{lineageSharedId}")
-    public ResponseEntity<AffiliationResponse> assignAffiliationLineage(
+    public ResponseEntity<AffiliationResponse> appendAffiliationLineage(
             @PathVariable("lineageSharedId") UUID lineageSharedId,
             @RequestBody AffiliationCreateLineageRequest request
     ) {
@@ -71,9 +69,7 @@ public class AffiliationController {
                 .lineageSharedId(lineageSharedId)
                 .collegeId(request.collegeId())
                 .majorId(request.majorId())
-                .validFrom(request.validFrom())
-                .validTo(request.validTo())
-                .versionDescription(request.versionDescription())
+                .validAt(request.validAt())
                 .build();
 
         AffiliationResponse response = AffiliationResponseMapper.toResponse(affiliationUseCase.appendAffiliationLineage(command));

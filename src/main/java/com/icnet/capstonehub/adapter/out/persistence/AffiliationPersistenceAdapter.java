@@ -16,7 +16,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -28,19 +28,19 @@ public class AffiliationPersistenceAdapter implements AffiliationPort {
     private final AffiliationRepository affiliationRepository;
 
     @Override
-    public Optional<Affiliation> getSnapshotOfRecord(Lineage.SharedId lineageSharedId, Version.SharedId versionSharedId, LocalDate txAt) {
+    public Optional<Affiliation> getSnapshotOfRecord(Lineage.SharedId lineageSharedId, Version.SharedId versionSharedId, LocalDateTime txAt) {
         return affiliationRepository.findSnapshotOfRecord(lineageSharedId.value(), versionSharedId.value(), txAt)
                 .map(AffiliationEntityMapper::toDomain);
     }
 
     @Override
-    public Optional<Affiliation> getSnapshotOfRecord(Lineage.SharedId lineageSharedId, LocalDate validAt, LocalDate txAt) {
+    public Optional<Affiliation> getSnapshotOfRecord(Lineage.SharedId lineageSharedId, LocalDateTime validAt, LocalDateTime txAt) {
         return affiliationRepository.findSnapshotOfRecord(lineageSharedId.value(), validAt, txAt)
                 .map(AffiliationEntityMapper::toDomain);
     }
 
     @Override
-    public List<Affiliation> getLineageOfSnapshot(Lineage.SharedId lineageSharedId, LocalDate txAt) {
+    public List<Affiliation> getLineageOfSnapshot(Lineage.SharedId lineageSharedId, LocalDateTime txAt) {
         return affiliationRepository.findLineageOfSnapshot(lineageSharedId.value(), txAt).stream()
                 .map(AffiliationEntityMapper::toDomain)
                 .toList();
@@ -54,7 +54,7 @@ public class AffiliationPersistenceAdapter implements AffiliationPort {
     }
 
     @Override
-    public List<Affiliation> getVersionOfRecord(Lineage.SharedId lineageSharedId, LocalDate validAt) {
+    public List<Affiliation> getVersionOfRecord(Lineage.SharedId lineageSharedId, LocalDateTime validAt) {
         return affiliationRepository.findVersionOfRecord(lineageSharedId.value(), validAt).stream()
                 .map(AffiliationEntityMapper::toDomain)
                 .toList();

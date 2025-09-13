@@ -1,9 +1,10 @@
 package com.icnet.capstonehub.adapter.in.web.request;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
-public record AffiliationLineageAmendRequest(
+public record AffiliationLineageAppendRequest(
         UUID collegeId,
         UUID majorId,
-        String versionDescription
+        LocalDateTime validAt
 ) {}
