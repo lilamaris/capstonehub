@@ -18,7 +18,7 @@ public interface AffiliationRepository extends JpaRepository<AffiliationEntity, 
             FROM AffiliationEntity a
             LEFT JOIN FETCH a.version v
             LEFT JOIN FETCH a.lineage l
-            WHERE l.scope = com.icnet.capstonehub.domain.Lineage.Scope.AFFILIATION
+            WHERE l.scope = com.icnet.capstonehub.domain.model.Lineage.Scope.AFFILIATION
                 AND l.sharedId = :lineageSharedId
                 AND v.sharedId = :versionSharedId
                 AND v.txFrom <= :txAt
@@ -34,7 +34,7 @@ public interface AffiliationRepository extends JpaRepository<AffiliationEntity, 
             FROM AffiliationEntity a
             LEFT JOIN FETCH a.version v
             LEFT JOIN FETCH a.lineage l
-            WHERE l.scope = com.icnet.capstonehub.domain.Lineage.Scope.AFFILIATION
+            WHERE l.scope = com.icnet.capstonehub.domain.model.Lineage.Scope.AFFILIATION
                 AND l.sharedId = :lineageSharedId
                 AND l.validFrom <= :validAt
                 AND (l.validTo IS NULL OR l.validTo > :validAt)
@@ -51,7 +51,7 @@ public interface AffiliationRepository extends JpaRepository<AffiliationEntity, 
             FROM AffiliationEntity a
             LEFT JOIN FETCH a.version v
             LEFT JOIN FETCH a.lineage l
-            WHERE l.scope = com.icnet.capstonehub.domain.Lineage.Scope.AFFILIATION
+            WHERE l.scope = com.icnet.capstonehub.domain.model.Lineage.Scope.AFFILIATION
                 AND l.sharedId = :lineageSharedId
                 AND v.sharedId = :versionSharedId""")
     List<AffiliationEntity> findVersionOfRecord(
@@ -64,7 +64,7 @@ public interface AffiliationRepository extends JpaRepository<AffiliationEntity, 
             FROM AffiliationEntity a
             LEFT JOIN FETCH a.version v
             LEFT JOIN FETCH a.lineage l
-            WHERE l.scope = com.icnet.capstonehub.domain.Lineage.Scope.AFFILIATION
+            WHERE l.scope = com.icnet.capstonehub.domain.model.Lineage.Scope.AFFILIATION
                 AND l.sharedId = :lineageSharedId
                 AND l.validFrom <= :validAt
                 AND (l.validTo IS NULL OR l.validTo > :validAt)""")
@@ -78,7 +78,7 @@ public interface AffiliationRepository extends JpaRepository<AffiliationEntity, 
             FROM AffiliationEntity a
             LEFT JOIN FETCH a.version v
             LEFT JOIN FETCH a.lineage l
-            WHERE l.scope = com.icnet.capstonehub.domain.Lineage.Scope.AFFILIATION
+            WHERE l.scope = com.icnet.capstonehub.domain.model.Lineage.Scope.AFFILIATION
                 AND l.sharedId = :lineageSharedId
                 AND v.txFrom <= :txAt
                 AND (v.txTo IS NULL OR v.txTo > :txAt)""")
