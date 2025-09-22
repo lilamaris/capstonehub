@@ -31,6 +31,19 @@ public class PeriodTest {
     }
 
     @Test
+    void should_except_create() {
+        LocalDateTime from = LocalDateTime.of(2024, 6, 1, 0, 0, 0);
+        LocalDateTime to = LocalDateTime.of(2024, 1, 1, 0, 0,  0);
+
+        assertThatThrownBy(
+                () -> new Period(from, to)
+        ).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(
+                () -> Period.pair(from, to)
+        ).isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
     void halfOpen_overlap_rules() {
         LocalDateTime beforeFrom = LocalDateTime.of(2024, 1, 1, 0, 0,  0);
         LocalDateTime from = LocalDateTime.of(2024, 6, 1, 0, 0, 0);
