@@ -36,7 +36,7 @@ public class AccountTest {
     public void should_throw() {
         assertThatThrownBy(
                 () -> {
-                    var manual_credential = Account.builder()
+                    Account.builder()
                             .provider(Account.Type.CREDENTIAL)
                             .build();
                 }

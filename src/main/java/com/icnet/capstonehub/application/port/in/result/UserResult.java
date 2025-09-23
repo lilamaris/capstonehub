@@ -2,7 +2,6 @@ package com.icnet.capstonehub.application.port.in.result;
 
 import lombok.Builder;
 
-import java.util.List;
 import java.util.UUID;
 
 @Builder

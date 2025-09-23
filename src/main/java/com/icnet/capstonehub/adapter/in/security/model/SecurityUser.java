@@ -1,9 +1,6 @@
 package com.icnet.capstonehub.adapter.in.security.model;
 
 import com.icnet.capstonehub.application.port.in.result.AccountResult;
-import com.icnet.capstonehub.application.port.in.result.UserResult;
-import com.icnet.capstonehub.domain.model.Account;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

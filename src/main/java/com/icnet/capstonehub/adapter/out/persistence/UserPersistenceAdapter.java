@@ -4,7 +4,6 @@ import com.icnet.capstonehub.adapter.out.persistence.mapper.UserEntityMapper;
 import com.icnet.capstonehub.adapter.out.persistence.repository.UserRepository;
 import com.icnet.capstonehub.application.port.out.UserPort;
 import com.icnet.capstonehub.domain.model.User;
-import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -15,7 +14,6 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class UserPersistenceAdapter implements UserPort {
     private final UserRepository userRepository;
-    private final EntityManager em;
 
     @Override
     public List<User> getAll() {

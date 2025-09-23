@@ -2,7 +2,6 @@ package com.icnet.capstonehub.adapter.out.persistence.mapper;
 
 import com.icnet.capstonehub.adapter.out.persistence.entity.AccountEntity;
 import com.icnet.capstonehub.domain.model.Account;
-import com.icnet.capstonehub.domain.model.User;
 
 import java.util.Optional;
 
