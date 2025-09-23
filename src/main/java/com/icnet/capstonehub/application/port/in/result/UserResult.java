@@ -1,0 +1,15 @@
+package com.icnet.capstonehub.application.port.in.result;
+
+import lombok.Builder;
+
+import java.util.List;
+import java.util.UUID;
+
+@Builder
+public record UserResult(
+    UUID id,
+    String name,
+    String email,
+    String role,
+    List<AccountResult> connectedAccount
+) {}

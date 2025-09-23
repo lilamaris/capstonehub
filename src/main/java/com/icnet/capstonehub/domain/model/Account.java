@@ -7,12 +7,14 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 public record Account(
+    Id id,
     Type provider,
     String providerId,
     @Nullable String passwordHash,
     User.Id connectedUserId,
     LocalDateTime connectedAt
 ) {
+    public record Id(UUID value) {}
     public enum Type { CREDENTIAL, GITHUB }
 
     @Builder
