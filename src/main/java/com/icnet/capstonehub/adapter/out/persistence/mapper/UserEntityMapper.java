@@ -23,7 +23,7 @@ public class UserEntityMapper {
                 .build();
     }
 
-    public static User toDomainLite(UserEntity entity) {
+    public static User toDomain(UserEntity entity) {
         var id = new User.Id(entity.getId());
 
         return User.builder()
@@ -35,7 +35,7 @@ public class UserEntityMapper {
                 .build();
     }
 
-    public static User toDomain(UserEntity entity, List<UUID> accountIds) {
+    public static User toDomainWithAccount(UserEntity entity, List<UUID> accountIds) {
         var id = new User.Id(entity.getId());
         List<Account.Id> ids = accountIds == null
                 ? Collections.emptyList()

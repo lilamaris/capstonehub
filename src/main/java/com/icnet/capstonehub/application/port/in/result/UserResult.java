@@ -10,6 +10,5 @@ public record UserResult(
     UUID id,
     String name,
     String email,
-    String role,
-    List<AccountResult> connectedAccount
+    String role
 ) {}

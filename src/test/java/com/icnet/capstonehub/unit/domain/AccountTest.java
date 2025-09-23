@@ -15,9 +15,13 @@ public class AccountTest {
     public void should_create_account() {
         var now = LocalDateTime.now();
         var userId = new User.Id(UUID.randomUUID());
+        var user = User.builder()
+                .id(userId)
+                .build();
+
         var providerId = UUID.randomUUID().toString();
-        var credential = Account.withCredential("This is Hashed Password", userId, now);
-        var provider = Account.withProvider(Account.Type.GITHUB, providerId, userId, now);
+        var credential = Account.withCredential("This is Hashed Password", user, now);
+        var provider = Account.withProvider(Account.Type.GITHUB, providerId, user, now);
 
         assertThat(credential).isInstanceOf(Account.class);
         assertThat(credential.provider()).isEqualTo(Account.Type.CREDENTIAL);

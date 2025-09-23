@@ -1,5 +1,6 @@
 package com.icnet.capstonehub.adapter.in.security.config;
 
+import com.icnet.capstonehub.adapter.in.security.service.SecurityUserDetailsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -7,7 +8,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -20,14 +21,15 @@ import java.util.List;
 @EnableMethodSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
-    private final UserDetailsService userDetailsService;
+    private final SecurityUserDetailsService userDetailsService;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(c -> {
             c
                     .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                    .requestMatchers(HttpMethod.POST, "/api/v1/auth/login").permitAll()
+                    .requestMatchers(HttpMethod.POST, "/api/v1/auth/signin").permitAll()
+                    .requestMatchers(HttpMethod.POST, "/api/v1/auth/signup").not().authenticated()
                     .requestMatchers(HttpMethod.POST, "/api/v1/user").hasAnyRole("MANAGER", "ADMIN")
                     .anyRequest().authenticated();
         });
@@ -39,7 +41,8 @@ public class SecurityConfig {
                     }
                 );
         });
-        http.userDetailsService(userDetailsService);
+
+        http.sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         http.csrf(AbstractHttpConfigurer::disable);
         http.cors(c -> {
             c.configurationSource(corsConfigurationSource());

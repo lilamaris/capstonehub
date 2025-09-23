@@ -12,26 +12,21 @@ import java.util.Collection;
 import java.util.List;
 
 public record SecurityUser(
-        UserResult user
+        AccountResult account
 ) implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority("ROLE_" + user.role()));
+        return List.of(new SimpleGrantedAuthority("ROLE_" + account.user().role()));
     }
 
     @Override
     public String getPassword() {
-        return user.connectedAccount()
-                .stream()
-                .filter(accountResult -> accountResult.provider().equals(Account.Type.CREDENTIAL))
-                .findFirst()
-                .map(AccountResult::passwordHash)
-                .orElseThrow(() -> new BadCredentialsException("user doesn't have any credentials"));
+        return account.passwordHash();
     }
 
     @Override
     public String getUsername() {
-        return user.email();
+        return account.user().email();
     }
 
     @Override

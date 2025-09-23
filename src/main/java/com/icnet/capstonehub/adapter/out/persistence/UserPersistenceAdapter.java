@@ -8,6 +8,7 @@ import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Optional;
 
 @Component
@@ -17,12 +18,27 @@ public class UserPersistenceAdapter implements UserPort {
     private final EntityManager em;
 
     @Override
-    public Optional<User> findByEmail(String email) {
-        return userRepository.findByEmail(email).map(UserEntityMapper::toDomainLite);
+    public List<User> getAll() {
+        return userRepository.findAll().stream().map(UserEntityMapper::toDomain).toList();
+    }
+
+    @Override
+    public Optional<User> getByEmail(String email) {
+        return userRepository.findByEmail(email).map(UserEntityMapper::toDomain);
+    }
+
+    @Override
+    public User update(User.Id id, User user) {
+        return null;
+    }
+
+    @Override
+    public void delete(User.Id id) {
+
     }
 
     @Override
     public User save(User user) {
-        return UserEntityMapper.toDomainLite(userRepository.save(UserEntityMapper.toEntity(user)));
+        return UserEntityMapper.toDomain(userRepository.save(UserEntityMapper.toEntity(user)));
      }
 }
