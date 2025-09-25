@@ -1,5 +1,6 @@
 package com.icnet.capstonehub.adapter.in.web.controller;
 
+import com.icnet.capstonehub.adapter.in.security.service.JwtService;
 import com.icnet.capstonehub.adapter.in.web.mapper.UserResponseMapper;
 import com.icnet.capstonehub.adapter.in.web.request.SigninRequest;
 import com.icnet.capstonehub.adapter.in.web.request.SignupRequest;
@@ -13,7 +14,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -25,10 +25,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/auth")
 public class AuthController {
-    private final AuthenticationManager authenticationManager;
     private final AccountUseCase accountUseCase;
 
+    private final AuthenticationManager authenticationManager;
     private final PasswordEncoder passwordEncoder;
+    private final JwtService jwtService;
 
     @PostMapping("/signin")
     public ResponseEntity<?> signin(
@@ -36,10 +37,9 @@ public class AuthController {
             @Valid @RequestBody SigninRequest body
     ) {
         log.info("Signin request");
-        Authentication authenticationRequest = UsernamePasswordAuthenticationToken.unauthenticated(body.email(), body.password());
-        Authentication authenticationResponse = this.authenticationManager.authenticate(authenticationRequest);
-
-        return ResponseEntity.ok(authenticationResponse);
+        var authToken = new UsernamePasswordAuthenticationToken(body.email(), body.password());
+        var auth = authenticationManager.authenticate(authToken);
+        return ResponseEntity.ok(jwtService.createToken(auth));
     }
 
     @PostMapping("/signup")
