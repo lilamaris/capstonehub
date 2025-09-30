@@ -2,9 +2,6 @@ package com.icnet.capstonehub.domain.model;
 
 import lombok.Builder;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Builder(toBuilder = true)

@@ -1,11 +1,8 @@
 package com.icnet.capstonehub.adapter.out.persistence.mapper;
 
 import com.icnet.capstonehub.adapter.out.persistence.entity.UserEntity;
-import com.icnet.capstonehub.domain.model.Account;
 import com.icnet.capstonehub.domain.model.User;
 
-import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
