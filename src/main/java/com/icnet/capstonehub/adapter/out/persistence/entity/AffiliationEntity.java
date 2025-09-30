@@ -8,9 +8,9 @@ import java.util.UUID;
 @Entity
 @Table(name = "affiliation")
 @Getter
+@Builder(toBuilder = true)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-@Builder(toBuilder = true)
 public class AffiliationEntity {
     @Id @GeneratedValue
     private UUID id;
