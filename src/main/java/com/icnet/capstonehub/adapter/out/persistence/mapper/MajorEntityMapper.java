@@ -23,6 +23,7 @@ public class MajorEntityMapper {
         return Major.builder()
                 .id(id)
                 .name(entity.getName())
+                .audit(AuditableEntityMapper.toDomain(entity))
                 .build();
     }
 }

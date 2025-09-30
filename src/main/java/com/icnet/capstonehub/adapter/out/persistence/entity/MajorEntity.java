@@ -11,7 +11,7 @@ import java.util.UUID;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class MajorEntity {
+public class MajorEntity extends AuditableEntity {
     @Id @GeneratedValue
     private UUID id;
 

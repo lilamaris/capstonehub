@@ -5,6 +5,6 @@ import lombok.*;
 import java.util.UUID;
 
 @Builder
-public record Major(Id id, String name) {
+public record Major(Id id, String name, Audit audit) {
     public record Id(UUID value) {}
 }
