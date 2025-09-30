@@ -2,7 +2,6 @@ package com.icnet.capstonehub.application.service;
 
 import com.icnet.capstonehub.application.port.in.MajorUseCase;
 import com.icnet.capstonehub.application.port.in.command.MajorCreateCommand;
-import com.icnet.capstonehub.application.port.in.mapper.MajorResultMapper;
 import com.icnet.capstonehub.application.port.in.result.MajorResult;
 import com.icnet.capstonehub.application.port.out.MajorPort;
 import com.icnet.capstonehub.domain.model.Major;
@@ -20,12 +19,12 @@ public class MajorService implements MajorUseCase {
 
     @Override
     public List<MajorResult> getAll() {
-        return majorPort.getAll().stream().map(MajorResultMapper::toResult).toList();
+        return majorPort.getAll().stream().map(MajorResult::from).toList();
     }
 
     @Override
     public MajorResult createMajor(MajorCreateCommand command) {
         Major domain = Major.builder().name(command.name()).build();
-        return MajorResultMapper.toResult(majorPort.save(domain));
+        return MajorResult.from(majorPort.save(domain));
     }
 }

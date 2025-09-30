@@ -2,7 +2,6 @@ package com.icnet.capstonehub.application.service;
 
 import com.icnet.capstonehub.application.port.in.CollegeUseCase;
 import com.icnet.capstonehub.application.port.in.command.CollegeCreateCommand;
-import com.icnet.capstonehub.application.port.in.mapper.CollegeResultMapper;
 import com.icnet.capstonehub.application.port.in.result.CollegeResult;
 import com.icnet.capstonehub.application.port.out.CollegePort;
 import com.icnet.capstonehub.domain.model.College;
@@ -20,12 +19,12 @@ public class CollegeService implements CollegeUseCase {
 
     @Override
     public List<CollegeResult> getAll() {
-        return collegePort.getAll().stream().map(CollegeResultMapper::toResult).toList();
+        return collegePort.getAll().stream().map(CollegeResult::from).toList();
     }
 
     @Override
     public CollegeResult createCollege(CollegeCreateCommand command) {
         College domain = College.builder().name(command.name()).build();
-        return CollegeResultMapper.toResult(collegePort.save(domain));
+        return CollegeResult.from(collegePort.save(domain));
     }
 }
