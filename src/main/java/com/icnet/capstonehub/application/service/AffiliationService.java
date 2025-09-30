@@ -5,7 +5,6 @@ import com.icnet.capstonehub.application.port.in.AffiliationUseCase;
 import com.icnet.capstonehub.application.port.in.command.AffiliationLineageAmendCommand;
 import com.icnet.capstonehub.application.port.in.command.AffiliationLineageAppendCommand;
 import com.icnet.capstonehub.application.port.in.command.AffiliationLineageInitialCommand;
-import com.icnet.capstonehub.application.port.in.mapper.AffiliationResultMapper;
 import com.icnet.capstonehub.application.port.in.result.AffiliationResult;
 import com.icnet.capstonehub.application.port.out.AffiliationPort;
 import com.icnet.capstonehub.application.port.out.CollegePort;
@@ -34,14 +33,14 @@ public class AffiliationService implements AffiliationUseCase {
     public List<AffiliationResult> getAffiliationLineage(UUID lineageSharedId) {
         var now = LocalDateTime.now();
         return affiliationPort.getLineageOfSnapshot(new Lineage.SharedId(lineageSharedId), now).stream()
-                .map(AffiliationResultMapper::toResult)
+                .map(AffiliationResult::from)
                 .toList();
     }
 
     @Override
     public List<AffiliationResult> getAffiliationLineage(UUID lineageSharedId, LocalDateTime txAt) {
         return affiliationPort.getLineageOfSnapshot(new Lineage.SharedId(lineageSharedId), txAt).stream()
-                .map(AffiliationResultMapper::toResult)
+                .map(AffiliationResult::from)
                 .toList();
     }
 
@@ -53,7 +52,7 @@ public class AffiliationService implements AffiliationUseCase {
 
         var initial = Affiliation.initial(collegeId, majorId, now, command.validAt());
 
-        return AffiliationResultMapper.toResult(affiliationPort.save(initial));
+        return AffiliationResult.from(affiliationPort.save(initial));
     }
 
     @Override
@@ -68,7 +67,7 @@ public class AffiliationService implements AffiliationUseCase {
         var appendTransition = headAffiliation.append(collegeId, majorId, now, command.validAt());
         affiliationPort.save(appendTransition.previous());
 
-        return AffiliationResultMapper.toResult(affiliationPort.save(appendTransition.next()));
+        return AffiliationResult.from(affiliationPort.save(appendTransition.next()));
     }
 
     @Override
@@ -84,6 +83,6 @@ public class AffiliationService implements AffiliationUseCase {
         var amendTransition = headAffiliation.amend(collegeId, majorId, now, command.versionDescription());
         affiliationPort.save(amendTransition.previous());
 
-        return AffiliationResultMapper.toResult(affiliationPort.save(amendTransition.next()));
+        return AffiliationResult.from(affiliationPort.save(amendTransition.next()));
     }
 }

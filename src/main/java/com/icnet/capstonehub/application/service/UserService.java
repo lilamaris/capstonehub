@@ -3,7 +3,6 @@ package com.icnet.capstonehub.application.service;
 import com.icnet.capstonehub.application.port.in.UserUseCase;
 import com.icnet.capstonehub.application.port.in.command.CreateUserCommand;
 import com.icnet.capstonehub.application.port.in.command.UpdateUserCommand;
-import com.icnet.capstonehub.application.port.in.mapper.UserResultMapper;
 import com.icnet.capstonehub.application.port.in.result.UserResult;
 import com.icnet.capstonehub.application.port.out.UserPort;
 import com.icnet.capstonehub.domain.model.User;
@@ -28,7 +27,7 @@ public class UserService implements UserUseCase {
                 .name(command.name())
                 .role(User.Role.STUDENT)
                 .build();
-        return UserResultMapper.toResult(userPort.save(user));
+        return UserResult.from(userPort.save(user));
     }
 
     @Override

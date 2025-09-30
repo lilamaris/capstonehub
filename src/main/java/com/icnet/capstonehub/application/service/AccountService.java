@@ -2,8 +2,6 @@ package com.icnet.capstonehub.application.service;
 
 import com.icnet.capstonehub.application.port.in.AccountUseCase;
 import com.icnet.capstonehub.application.port.in.command.SignupCredentialCommand;
-import com.icnet.capstonehub.application.port.in.mapper.AccountResultMapper;
-import com.icnet.capstonehub.application.port.in.mapper.UserResultMapper;
 import com.icnet.capstonehub.application.port.in.result.AccountResult;
 import com.icnet.capstonehub.application.port.in.result.UserResult;
 import com.icnet.capstonehub.application.port.out.AccountPort;
@@ -29,7 +27,7 @@ public class AccountService implements AccountUseCase {
 
     @Override
     public AccountResult getCredentialByUserEmail(String email) {
-        return accountPort.getCredentialByUserEmail(email).map(AccountResultMapper::toResult)
+        return accountPort.getCredentialByUserEmail(email).map(AccountResult::from)
                 .orElseThrow(() -> new BadCredentialsException("credential not exists"));
     }
 
@@ -37,7 +35,7 @@ public class AccountService implements AccountUseCase {
     public List<AccountResult> getAccountByUserEmail(String email) {
         return accountPort.getAccountByUserEmail(email)
                 .stream()
-                .map(AccountResultMapper::toResult)
+                .map(AccountResult::from)
                 .toList();
     }
 
@@ -54,6 +52,6 @@ public class AccountService implements AccountUseCase {
         var account = Account.withCredential(command.passwordHash(), savedUser, LocalDateTime.now());
         accountPort.save(account);
 
-        return UserResultMapper.toResult(savedUser);
+        return UserResult.from(savedUser);
     }
 }
