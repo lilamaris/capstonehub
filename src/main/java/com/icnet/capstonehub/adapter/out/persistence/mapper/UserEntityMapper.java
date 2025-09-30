@@ -31,22 +31,6 @@ public class UserEntityMapper {
                 .name(entity.getName())
                 .email(entity.getEmail())
                 .role(entity.getRole())
-                .connectedAccount(Collections.emptyList())
-                .build();
-    }
-
-    public static User toDomainWithAccount(UserEntity entity, List<UUID> accountIds) {
-        var id = new User.Id(entity.getId());
-        List<Account.Id> ids = accountIds == null
-                ? Collections.emptyList()
-                : accountIds.stream().map(Account.Id::new).toList();
-
-        return User.builder()
-                .id(id)
-                .name(entity.getName())
-                .email(entity.getEmail())
-                .role(entity.getRole())
-                .connectedAccount(ids)
                 .build();
     }
 }

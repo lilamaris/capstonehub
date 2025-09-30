@@ -12,13 +12,8 @@ public record User(
     Id id,
     String name,
     String email,
-    Role role,
-    List<Account.Id> connectedAccount
+    Role role
 ) {
     public record Id(UUID value) {}
     public enum Role { STUDENT, MANAGER, ADMIN }
-
-    public User {
-        connectedAccount = Optional.ofNullable(connectedAccount).orElseGet(ArrayList::new);
-    }
 }
