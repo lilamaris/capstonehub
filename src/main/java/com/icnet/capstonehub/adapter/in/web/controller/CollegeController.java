@@ -1,12 +1,12 @@
 package com.icnet.capstonehub.adapter.in.web.controller;
 
-import com.icnet.capstonehub.adapter.in.web.mapper.CollegeResponseMapper;
 import com.icnet.capstonehub.adapter.in.web.request.CollegeCreateRequest;
 import com.icnet.capstonehub.adapter.in.web.response.CollegeResponse;
 import com.icnet.capstonehub.application.port.in.CollegeUseCase;
 import com.icnet.capstonehub.application.port.in.command.CollegeCreateCommand;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,17 +20,18 @@ public class CollegeController {
     @GetMapping
     public ResponseEntity<List<CollegeResponse>> getCollege() {
         List<CollegeResponse> response = collegeUseCase.getAll().stream()
-                .map(CollegeResponseMapper::toResponse).toList();
+                .map(CollegeResponse::from).toList();
         return ResponseEntity.ok(response);
     }
 
+    @PreAuthorize("hasRole('MANAGER')")
     @PostMapping
     public ResponseEntity<CollegeResponse> createCollege(@RequestBody CollegeCreateRequest request) {
         CollegeCreateCommand command = CollegeCreateCommand.builder()
                 .name(request.name())
                 .build();
 
-        CollegeResponse response = CollegeResponseMapper.toResponse(collegeUseCase.createCollege(command));
+        CollegeResponse response = CollegeResponse.from(collegeUseCase.createCollege(command));
         return ResponseEntity.ok(response);
     }
 }

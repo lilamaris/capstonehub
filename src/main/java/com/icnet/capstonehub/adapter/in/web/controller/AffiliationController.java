@@ -1,6 +1,5 @@
 package com.icnet.capstonehub.adapter.in.web.controller;
 
-import com.icnet.capstonehub.adapter.in.web.mapper.AffiliationResponseMapper;
 import com.icnet.capstonehub.adapter.in.web.request.AffiliationCreateLineageRequest;
 import com.icnet.capstonehub.adapter.in.web.request.AffiliationLineageAmendRequest;
 import com.icnet.capstonehub.adapter.in.web.response.AffiliationResponse;
@@ -28,7 +27,7 @@ public class AffiliationController {
             @PathVariable("lineageId") UUID lineageId
     ) {
         List<AffiliationResponse> response = affiliationUseCase.getAffiliationLineage(lineageId).stream()
-                .map(AffiliationResponseMapper::toResponse).toList();
+                .map(AffiliationResponse::from).toList();
         return ResponseEntity.ok(response);
     }
 
@@ -46,7 +45,7 @@ public class AffiliationController {
                 .validAt(request.validAt())
                 .build();
 
-        var response = AffiliationResponseMapper.toResponse(affiliationUseCase.initialAffiliationLineage(command));
+        var response = AffiliationResponse.from(affiliationUseCase.initialAffiliationLineage(command));
 
         log.info("""
                 [Controller] Initialize affiliation lineage local variables
@@ -72,7 +71,7 @@ public class AffiliationController {
                 .validAt(request.validAt())
                 .build();
 
-        AffiliationResponse response = AffiliationResponseMapper.toResponse(affiliationUseCase.appendAffiliationLineage(command));
+        AffiliationResponse response = AffiliationResponse.from(affiliationUseCase.appendAffiliationLineage(command));
 
         log.info("""
                 [Controller] Assign affiliation lineage local variables
@@ -100,7 +99,7 @@ public class AffiliationController {
                 .versionDescription(request.versionDescription())
                 .build();
 
-        AffiliationResponse response = AffiliationResponseMapper.toResponse(affiliationUseCase.amendAffiliationLineage(command));
+        AffiliationResponse response = AffiliationResponse.from(affiliationUseCase.amendAffiliationLineage(command));
 
         log.info("""
                 [Controller] Amend affiliation lineage local variables
