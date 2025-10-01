@@ -1,6 +1,7 @@
 package com.icnet.capstonehub.adapter.in.security.model;
 
 import com.icnet.capstonehub.application.port.in.result.AccountResult;
+import com.icnet.capstonehub.application.port.in.result.UserResult;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -11,6 +12,10 @@ import java.util.List;
 public record SecurityUser(
         AccountResult account
 ) implements UserDetails {
+    public UserResult getUser() {
+        return account.user();
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority("ROLE_" + account.user().role()));
