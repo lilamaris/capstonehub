@@ -56,9 +56,7 @@ public class SecurityConfig {
         http.authorizeHttpRequests(c -> {
             c
                     .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                    .requestMatchers(HttpMethod.POST, "/api/v1/auth/signin").permitAll()
-                    .requestMatchers(HttpMethod.POST, "/api/v1/auth/signup").not().authenticated()
-                    .requestMatchers(HttpMethod.POST, "/api/v1/user").hasAnyRole("MANAGER", "ADMIN")
+                    .requestMatchers(HttpMethod.POST, "/api/v1/auth/**").permitAll()
                     .anyRequest().authenticated();
         });
 
