@@ -21,6 +21,11 @@ public class UserService implements UserUseCase {
     private final UserPort userPort;
 
     @Override
+    public UserResult getByEmail(String email) {
+        return userPort.getByEmail(email).map(UserResult::from).orElseThrow(IllegalAccessError::new);
+    }
+
+    @Override
     public UserResult createUser(CreateUserCommand command) {
         User user = User.builder()
                 .email(command.email())

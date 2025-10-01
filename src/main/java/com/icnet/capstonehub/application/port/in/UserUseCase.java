@@ -8,6 +8,7 @@ import java.util.List;
 
 public interface UserUseCase {
     List<UserResult> getAll();
+    UserResult getByEmail(String email);
     UserResult createUser(CreateUserCommand command);
     UserResult updateUser(UpdateUserCommand command);
 }

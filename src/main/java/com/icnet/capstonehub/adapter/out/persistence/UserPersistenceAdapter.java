@@ -21,6 +21,11 @@ public class UserPersistenceAdapter implements UserPort {
     }
 
     @Override
+    public Optional<User> getById(User.Id id) {
+        return userRepository.findById(id.value()).map(UserEntityMapper::toDomain);
+    }
+
+    @Override
     public Optional<User> getByEmail(String email) {
         return userRepository.findByEmail(email).map(UserEntityMapper::toDomain);
     }

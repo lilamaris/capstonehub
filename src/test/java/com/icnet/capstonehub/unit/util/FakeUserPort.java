@@ -43,6 +43,13 @@ public class FakeUserPort implements UserPort {
     }
 
     @Override
+    public Optional<User> getById(User.Id id) {
+        return store.values().stream()
+                .filter(u -> u.id().equals(id))
+                .findFirst();
+    }
+
+    @Override
     public Optional<User> getByEmail(String email) {
         return store.values().stream()
                 .filter(u -> u.email().equals(email))
