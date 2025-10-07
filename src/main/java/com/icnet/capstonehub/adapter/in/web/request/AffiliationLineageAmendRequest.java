@@ -1,9 +1,0 @@
-package com.icnet.capstonehub.adapter.in.web.request;
-
-import java.util.UUID;
-
-public record AffiliationLineageAmendRequest(
-        UUID collegeId,
-        UUID majorId,
-        String versionDescription
-) {}

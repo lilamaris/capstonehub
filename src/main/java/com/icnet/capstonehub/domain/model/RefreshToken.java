@@ -9,7 +9,7 @@ import java.util.UUID;
 public record RefreshToken (
         Id id,
         User.Id userId,
-        UUID token,
+        String token,
         Instant expiredAt
 ) {
     public record Id (UUID value) {}

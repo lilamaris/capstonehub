@@ -13,7 +13,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
-import java.util.UUID;
 
 @Component
 @RequiredArgsConstructor
@@ -27,7 +26,7 @@ public class RefreshTokenPersistenceAdapter implements RefreshTokenPort {
     }
 
     @Override
-    public Optional<RefreshToken> getByToken(UUID token) {
+    public Optional<RefreshToken> getByToken(String token) {
         return refreshTokenRepository.findByToken(token).map(RefreshTokenEntityMapper::toDomain);
     }
 
@@ -50,7 +49,7 @@ public class RefreshTokenPersistenceAdapter implements RefreshTokenPort {
     }
 
     @Override
-    public void delete(UUID token) {
+    public void delete(String token) {
         var entity = refreshTokenRepository.findByToken(token).orElseThrow(EntityNotFoundException::new);
         refreshTokenRepository.delete(entity);
     }

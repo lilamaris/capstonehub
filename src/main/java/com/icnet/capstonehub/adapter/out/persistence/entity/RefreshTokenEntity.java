@@ -21,7 +21,7 @@ public class RefreshTokenEntity {
     private UserEntity user;
 
     @Column(nullable = false, unique = true)
-    private UUID token;
+    private String token;
 
     @Column(nullable = false)
     private Instant expiredAt;
