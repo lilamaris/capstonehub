@@ -1,12 +1,13 @@
 package com.icnet.capstonehub.application.port.in;
 
+import com.icnet.capstonehub.application.port.in.result.TokenResult;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtException;
+
 import java.util.UUID;
 
 public interface TokenUseCase {
-    String getUserRole(String token);
-    String getUserEmail(String token);
-    UUID issueRefreshToken(UUID userId);
-    String issueAccessToken(String email, String role);
-    String reissue(UUID token);
-    Boolean validateAccessToken(String token);
+    TokenResult reissue(String token);
+    TokenResult issue(UUID userId, String email, String role);
+    Claims parseAccessTokenOrThrow(String token) throws JwtException;
 }

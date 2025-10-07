@@ -4,14 +4,12 @@ import com.icnet.capstonehub.adapter.in.security.model.SecurityUser;
 import com.icnet.capstonehub.adapter.in.web.request.RefreshTokenRequest;
 import com.icnet.capstonehub.adapter.in.web.request.SigninRequest;
 import com.icnet.capstonehub.adapter.in.web.request.SignupRequest;
-import com.icnet.capstonehub.adapter.in.web.response.RefreshTokenResponse;
-import com.icnet.capstonehub.adapter.in.web.response.SigninResponse;
+import com.icnet.capstonehub.adapter.in.web.response.TokenResponse;
 import com.icnet.capstonehub.adapter.in.web.response.UserResponse;
 import com.icnet.capstonehub.application.port.in.AccountUseCase;
 import com.icnet.capstonehub.application.port.in.TokenUseCase;
 import com.icnet.capstonehub.application.port.in.UserUseCase;
 import com.icnet.capstonehub.application.port.in.command.SignupCredentialCommand;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,56 +29,28 @@ import java.util.Optional;
 @RequestMapping("/api/v1/auth")
 public class AuthController {
     private final AccountUseCase accountUseCase;
-    private final UserUseCase userUseCase;
     private final TokenUseCase tokenUseCase;
 
     private final AuthenticationManager authenticationManager;
     private final PasswordEncoder passwordEncoder;
 
-    @GetMapping("/me")
-    public ResponseEntity<UserResponse> me() {
-        var auth = SecurityContextHolder.getContext().getAuthentication();
-
-        log.info("/me auth: {}", auth);
-
-        return Optional.ofNullable(auth)
-                .filter(Authentication::isAuthenticated)
-                .map(Authentication::getPrincipal)
-                .map(String.class::cast)
-                .map(email -> {
-                    var response = UserResponse.from(userUseCase.getByEmail(email));
-                    return ResponseEntity.ok(response);
-                })
-                .orElse(ResponseEntity.badRequest().build());
-    }
-
     @PostMapping("/refresh")
-    public ResponseEntity<RefreshTokenResponse> refresh(
+    public ResponseEntity<TokenResponse> refresh(
             @RequestBody RefreshTokenRequest request
     ) {
-        var token = request.token();
-
-        var response = RefreshTokenResponse.builder()
-                .accessToken(tokenUseCase.reissue(token))
-                .build();
-
+        var token = request.refreshToken();
+        var response = TokenResponse.from(tokenUseCase.reissue(token));
         return ResponseEntity.ok(response);
     }
 
     @PostMapping("/signin")
-    public ResponseEntity<SigninResponse> signin(
-            HttpServletRequest request,
+    public ResponseEntity<?> signin(
             @Valid @RequestBody SigninRequest body
     ) {
         var authToken = new UsernamePasswordAuthenticationToken(body.email(), body.password());
         var auth = authenticationManager.authenticate(authToken);
         var user = ((SecurityUser) auth.getPrincipal()).getUser();
-        var accessToken = tokenUseCase.issueAccessToken(user.email(), user.role());
-        var refreshToken = tokenUseCase.issueRefreshToken(user.id());
-        var response = SigninResponse.builder()
-                .accessToken(accessToken)
-                .refreshToken(refreshToken)
-                .build();
+        var response = TokenResponse.from(tokenUseCase.issue(user.id(), user.email(), user.role()));
 
         return ResponseEntity.ok(response);
     }

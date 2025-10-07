@@ -1,12 +1,16 @@
 package com.icnet.capstonehub.adapter.in.security.config;
 
 import com.icnet.capstonehub.adapter.in.security.service.SecurityUserDetailsService;
+import io.jsonwebtoken.ExpiredJwtException;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.CredentialsExpiredException;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -56,21 +60,28 @@ public class SecurityConfig {
         http.authorizeHttpRequests(c -> {
             c
                     .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                    .requestMatchers(HttpMethod.POST, "/api/v1/auth/**").permitAll()
+                    .requestMatchers("/api/v1/auth/**").permitAll()
                     .anyRequest().authenticated();
         });
+        http.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
         http.exceptionHandling( c -> {
             c.authenticationEntryPoint(
                     (request, response, authException) -> {
-                        response.sendError(401, "Unauthorized");
+                        response.setContentType("application/json;charset=UTF-8");
+                        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                        String error = (String) request.getAttribute("jwtError");
+                        if ("expired".equals(error)) {
+                            response.getWriter().write("{\"error\":\"AccessTokenExpired\"}");
+                        } else {
+                            response.getWriter().write("{\"error\":\"Unauthorized\"}");
+                        }
                     }
                 );
         });
 
         http.authenticationProvider(authenticationProvider());
         http.sessionManagement(c -> c.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-        http.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
