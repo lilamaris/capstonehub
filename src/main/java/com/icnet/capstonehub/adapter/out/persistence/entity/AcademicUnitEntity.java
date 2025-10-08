@@ -15,11 +15,11 @@ public class AcademicUnitEntity {
     @Id @GeneratedValue
     private UUID id;
 
-    @OneToOne(cascade = CascadeType.PERSIST, optional = false)
+    @OneToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "edition_id", nullable = false)
     private EditionEntity edition;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "timeline_id", nullable = false)
     private TimelineEntity timeline;
 
