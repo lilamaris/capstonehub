@@ -10,26 +10,26 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class EditionTest {
     @Test
-    void should_create_new_version() {
+    void should_create_new_edition() {
         var txFrom = LocalDateTime.of(2024, 1, 1, 0, 0, 0);
         Edition v1 = Edition.initial(txFrom);
 
         assertThat(v1).isInstanceOf(Edition.class);
         assertThat(v1.id()).isNotNull();
         assertThat(v1.sharedId()).isNotNull();
-        assertThat(v1.versionNo()).isEqualTo(1);
-        assertThat(v1.versionDescription()).isEqualTo("Initial edition");
+        assertThat(v1.editionNo()).isEqualTo(1);
+        assertThat(v1.editionDescription()).isEqualTo("Initial edition");
         assertThat(v1.isHead()).isTrue();
     }
 
     @Test
-    void should_create_next_version() {
+    void should_create_next_edition() {
         var txFrom = LocalDateTime.of(2024, 1, 1, 0, 0, 0);
         Edition v1 = Edition.initial(txFrom);
 
         var txTo = LocalDateTime.of(2024, 3, 1, 2, 42, 1);
-        var versionDescription = "Next Edition";
-        var transition = v1.migrate(txTo, versionDescription);
+        var editionDescription = "Next Edition";
+        var transition = v1.migrate(txTo, editionDescription);
 
         var previous = transition.previous();
         var next = transition.next();
@@ -39,8 +39,8 @@ public class EditionTest {
         assertThat(previous.sharedId()).isEqualTo(next.sharedId());
         assertThat(previous.isHead()).isFalse();
 
-        assertThat(next.versionNo()).isEqualTo(previous.versionNo() + 1);
-        assertThat(next.versionDescription()).isEqualTo(versionDescription);
+        assertThat(next.editionNo()).isEqualTo(previous.editionNo() + 1);
+        assertThat(next.editionDescription()).isEqualTo(editionDescription);
         assertThat(next.isHead()).isTrue();
 
         assertThat(previous.txPeriod().isOverlap(next.txPeriod())).isFalse();
@@ -53,8 +53,8 @@ public class EditionTest {
         Edition v1 = Edition.initial(txFrom);
 
         var txTo = LocalDateTime.of(2024, 3, 1, 2, 42, 1);
-        var versionDescription = "Next Edition";
-        var transition = v1.migrate(txTo, versionDescription);
+        var editionDescription = "Next Edition";
+        var transition = v1.migrate(txTo, editionDescription);
 
         var previous = transition.previous();
         var next = transition.next();
