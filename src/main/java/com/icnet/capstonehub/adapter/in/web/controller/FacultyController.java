@@ -5,12 +5,15 @@ import com.icnet.capstonehub.adapter.in.web.response.FacultyResponse;
 import com.icnet.capstonehub.application.port.in.FacultyUseCase;
 import com.icnet.capstonehub.application.port.in.command.FacultyCreateCommand;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/faculty")
@@ -26,7 +29,8 @@ public class FacultyController {
 
     @PreAuthorize("hasRole('MANAGER')")
     @PostMapping
-    public ResponseEntity<FacultyResponse> createFaculty(@RequestBody FacultyCreateRequest request) {
+    public ResponseEntity<FacultyResponse> createFaculty(Authentication authentication, @RequestBody FacultyCreateRequest request) {
+        log.info("User: " + authentication.getName() + ", Roles: " + authentication.getAuthorities());
         FacultyCreateCommand command = FacultyCreateCommand.builder()
                 .name(request.name())
                 .build();

@@ -8,12 +8,14 @@ import java.util.UUID;
 @Builder
 public record DepartmentResult(
     UUID id,
-    String name
+    String name,
+    AuditResult audit
 ) {
     public static DepartmentResult from(Department domain) {
         return DepartmentResult.builder()
                 .id(domain.id().value())
                 .name(domain.name())
+                .audit(AuditResult.from(domain.audit()))
                 .build();
     }
 }
