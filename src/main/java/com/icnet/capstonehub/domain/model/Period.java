@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 
 public record Period(LocalDateTime from, LocalDateTime to) {
+    private static final LocalDateTime MAX_TIME = LocalDateTime.of(9999, 12, 31, 23, 59, 59);
     public record Split(Period previous, Period next) {}
 
     @Builder
@@ -23,7 +24,7 @@ public record Period(LocalDateTime from, LocalDateTime to) {
     public static Period fromToMax(LocalDateTime from) {
         return Period.builder()
                 .from(from)
-                .to(LocalDateTime.MAX)
+                .to(MAX_TIME)
                 .build();
     }
 
@@ -44,7 +45,7 @@ public record Period(LocalDateTime from, LocalDateTime to) {
     }
 
     public boolean isOpen() {
-        return to == LocalDateTime.MAX;
+        return to == MAX_TIME;
     }
 
     public Split splitAt(LocalDateTime at) {
