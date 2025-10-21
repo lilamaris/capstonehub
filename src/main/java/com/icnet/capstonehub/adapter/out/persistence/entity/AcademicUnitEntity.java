@@ -15,11 +15,13 @@ public class AcademicUnitEntity extends AuditableEntity {
     @Id @GeneratedValue
     private UUID id;
 
-    @OneToOne(fetch = FetchType.LAZY, optional = false)
+    @Setter
+    @OneToOne(fetch = FetchType.LAZY, optional = false, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "edition_id", nullable = false)
     private EditionEntity edition;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @Setter
+    @ManyToOne(fetch = FetchType.LAZY, optional = false, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "timeline_id", nullable = false)
     private TimelineEntity timeline;
 

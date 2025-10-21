@@ -1,8 +1,6 @@
 package com.icnet.capstonehub.adapter.out.persistence;
 
-import com.icnet.capstonehub.adapter.out.persistence.entity.AcademicUnitEntity;
-import com.icnet.capstonehub.adapter.out.persistence.entity.FacultyEntity;
-import com.icnet.capstonehub.adapter.out.persistence.entity.DepartmentEntity;
+import com.icnet.capstonehub.adapter.out.persistence.entity.*;
 import com.icnet.capstonehub.adapter.out.persistence.mapper.AcademicUnitEntityMapper;
 import com.icnet.capstonehub.adapter.out.persistence.mapper.TimelineEntityMapper;
 import com.icnet.capstonehub.adapter.out.persistence.mapper.EditionEntityMapper;
@@ -13,7 +11,6 @@ import com.icnet.capstonehub.domain.model.Edition;
 import com.icnet.capstonehub.domain.model.Timeline;
 import com.icnet.capstonehub.domain.model.User;
 import jakarta.persistence.EntityManager;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -69,18 +66,17 @@ public class AcademicUnitPersistenceAdapter implements AcademicUnitPort {
     }
 
     @Override
-    @Transactional
     public AcademicUnit save(AcademicUnit domain) {
         var entity = AcademicUnitEntity.builder()
-                .edition(EditionEntityMapper.toEntity(domain.edition()))
                 .timeline(TimelineEntityMapper.toEntity(domain.timeline()))
+                .edition(EditionEntityMapper.toEntity(domain.edition()))
                 .build();
 
-        UUID collegeId = domain.faculty().id().value();
-        UUID majorId = domain.department().id().value();
+        UUID facultyId = domain.facultyId().value();
+        UUID departmentId = domain.departmentId().value();
 
-        entity.setFaculty(em.getReference(FacultyEntity.class, collegeId));
-        entity.setDepartment(em.getReference(DepartmentEntity.class, majorId));
+        entity.setFaculty(em.getReference(FacultyEntity.class, facultyId));
+        entity.setDepartment(em.getReference(DepartmentEntity.class, departmentId));
 
         var saved = academicUnitRepository.save(entity);
         return AcademicUnitEntityMapper.toDomain(saved);

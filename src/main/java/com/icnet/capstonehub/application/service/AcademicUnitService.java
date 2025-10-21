@@ -5,9 +5,7 @@ import com.icnet.capstonehub.application.port.in.command.AcademicUnitAmendTimeli
 import com.icnet.capstonehub.application.port.in.command.AcademicUnitAppendTimelineCommand;
 import com.icnet.capstonehub.application.port.in.command.AcademicUnitInitialTimelineCommand;
 import com.icnet.capstonehub.application.port.in.result.AcademicUnitResult;
-import com.icnet.capstonehub.application.port.out.AcademicUnitPort;
-import com.icnet.capstonehub.application.port.out.FacultyPort;
-import com.icnet.capstonehub.application.port.out.DepartmentPort;
+import com.icnet.capstonehub.application.port.out.*;
 import com.icnet.capstonehub.domain.model.*;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
@@ -25,6 +23,8 @@ import java.util.UUID;
 @Transactional
 public class AcademicUnitService implements AcademicUnitUseCase {
     private final AcademicUnitPort academicUnitPort;
+    private final TimelinePort timelinePort;
+    private final EditionPort editionPort;
 
     private final FacultyPort facultyPort;
     private final DepartmentPort departmentPort;
@@ -52,13 +52,13 @@ public class AcademicUnitService implements AcademicUnitUseCase {
     }
 
     @Override
+    @Transactional
     public AcademicUnitResult initialAcademicUnitTimeline(AcademicUnitInitialTimelineCommand command) {
         var now = LocalDateTime.now();
         var facultyId = new Faculty.Id(command.facultyId());
         var departmentId = new Department.Id(command.departmentId());
 
         var initial = AcademicUnit.initial(facultyId, departmentId, now, command.validAt());
-
         return AcademicUnitResult.from(academicUnitPort.save(initial));
     }
 

@@ -19,12 +19,10 @@ public record Timeline(
     public record Transition(Timeline previous, Timeline next) {}
 
     public static Timeline initial(Scope scope, LocalDateTime validFrom) {
-        var id = new Id(UUID.randomUUID());
-        var lineageSharedId = new SharedId(UUID.randomUUID());
+        var sharedId = new SharedId(UUID.randomUUID());
         var validPeriod = Period.fromToMax(validFrom);
         return Timeline.builder()
-                .id(id)
-                .sharedId(lineageSharedId)
+                .sharedId(sharedId)
                 .scope(scope)
                 .validPeriod(validPeriod)
                 .build();

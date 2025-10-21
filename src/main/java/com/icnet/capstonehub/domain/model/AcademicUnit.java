@@ -11,10 +11,8 @@ public record AcademicUnit(
     @With Edition edition,
     @With Timeline timeline,
     Id id,
-    Faculty faculty,
-    Department department,
-    Faculty.Id collegeId,
-    Department.Id majorId
+    Faculty.Id facultyId,
+    Department.Id departmentId
 ) {
     public record Id(UUID value) {
     }
@@ -22,18 +20,18 @@ public record AcademicUnit(
     public record Transition(AcademicUnit previous, AcademicUnit next) {
     }
 
-    public static AcademicUnit initial(Faculty.Id collegeId, Department.Id majorId, LocalDateTime txAt, LocalDateTime validAt) {
+    public static AcademicUnit initial(Faculty.Id facultyId, Department.Id departmentId, LocalDateTime txAt, LocalDateTime validAt) {
         var id = new Id(UUID.randomUUID());
         return AcademicUnit.builder()
                 .id(id)
                 .edition(Edition.initial(txAt))
                 .timeline(Timeline.initial(Timeline.Scope.AFFILIATION, validAt))
-                .collegeId(collegeId)
-                .majorId(majorId)
+                .facultyId(facultyId)
+                .departmentId(departmentId)
                 .build();
     }
 
-    public Transition append(Faculty.Id collegeId, Department.Id majorId, LocalDateTime txAt, LocalDateTime validAt) {
+    public Transition append(Faculty.Id facultyId, Department.Id departmentId, LocalDateTime txAt, LocalDateTime validAt) {
         var splitTimeline = this.timeline.migrate(validAt);
         var previous = this.withTimeline(splitTimeline.previous());
 
@@ -42,14 +40,14 @@ public record AcademicUnit(
         var next = this.withTimeline(splitTimeline.next()).toBuilder()
                 .id(newId)
                 .edition(newEdition)
-                .collegeId(collegeId)
-                .majorId(majorId)
+                .facultyId(facultyId)
+                .departmentId(departmentId)
                 .build();
 
         return new Transition(previous, next);
     }
 
-    public Transition amend(Faculty.Id collegeId, Department.Id majorId, LocalDateTime txAt, String editionDescription) {
+    public Transition amend(Faculty.Id facultyId, Department.Id departmentId, LocalDateTime txAt, String editionDescription) {
         var splitEdition = this.edition.migrate(txAt, editionDescription);
         var previous = this.withEdition(splitEdition.previous()).toBuilder()
                 .timeline(this.timeline.expire(txAt))
@@ -58,8 +56,8 @@ public record AcademicUnit(
         var newId = new Id(UUID.randomUUID());
         var next = this.withEdition(splitEdition.next()).toBuilder()
                 .id(newId)
-                .collegeId(collegeId)
-                .majorId(majorId)
+                .facultyId(facultyId)
+                .departmentId(departmentId)
                 .build();
 
         return new Transition(previous, next);

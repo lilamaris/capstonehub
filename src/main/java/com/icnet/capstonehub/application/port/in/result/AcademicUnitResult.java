@@ -10,14 +10,14 @@ public record AcademicUnitResult(
         UUID id,
         EditionResult edition,
         TimelineResult timeline,
-        FacultyResult faculty,
-        DepartmentResult department
+        UUID facultyId,
+        UUID departmentId
 ) {
     public static AcademicUnitResult from(AcademicUnit domain) {
         return AcademicUnitResult.builder()
                 .id(domain.id().value())
-                .faculty(FacultyResult.from(domain.faculty()))
-                .department(DepartmentResult.from(domain.department()))
+                .facultyId(domain.facultyId().value())
+                .departmentId(domain.departmentId().value())
                 .edition(EditionResult.from(domain.edition()))
                 .timeline(TimelineResult.from(domain.timeline()))
                 .build();

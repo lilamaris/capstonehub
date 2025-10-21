@@ -10,16 +10,16 @@ public record AcademicUnitResponse(
         UUID id,
         EditionResponse edition,
         TimelineResponse timeline,
-        FacultyResponse faculty,
-        DepartmentResponse department
+        UUID facultyId,
+        UUID departmentId
 ) {
     public static AcademicUnitResponse from(AcademicUnitResult result) {
         return AcademicUnitResponse.builder()
                 .id(result.id())
                 .edition(EditionResponse.from(result.edition()))
                 .timeline(TimelineResponse.from(result.timeline()))
-                .faculty(FacultyResponse.from(result.faculty()))
-                .department(DepartmentResponse.from(result.department()))
+                .facultyId(result.facultyId())
+                .departmentId(result.departmentId())
                 .build();
     }
 }

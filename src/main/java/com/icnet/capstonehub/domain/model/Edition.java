@@ -19,12 +19,10 @@ public record Edition(
     public record Transition(Edition previous, Edition next) {}
 
     public static Edition initial(LocalDateTime txFrom) {
-        var id = new Id(UUID.randomUUID());
-        var editionSharedId = new SharedId(UUID.randomUUID());
+        var sharedId = new SharedId(UUID.randomUUID());
         var txPeriod = Period.fromToMax(txFrom);
         return Edition.builder()
-                .id(id)
-                .sharedId(editionSharedId)
+                .sharedId(sharedId)
                 .editionNo(1)
                 .txPeriod(txPeriod)
                 .editionDescription("Initial edition")

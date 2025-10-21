@@ -13,7 +13,7 @@ import java.util.UUID;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class TimelineEntity {
+public class TimelineEntity extends AuditableEntity {
     @Id @GeneratedValue
     private UUID id;
 
