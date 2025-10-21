@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.UUID;
 
 public interface AcademicUnitUseCase {
+    List<AcademicUnitResult> getAllAcademicUnitByUser(UUID userId);
     List<AcademicUnitResult> getAcademicUnitTimeline(UUID lineageSharedId);
     List<AcademicUnitResult> getAcademicUnitTimeline(UUID lineageSharedId, LocalDateTime txAt);
     AcademicUnitResult initialAcademicUnitTimeline(AcademicUnitInitialTimelineCommand command);

@@ -30,6 +30,13 @@ public class AcademicUnitService implements AcademicUnitUseCase {
     private final DepartmentPort departmentPort;
 
     @Override
+    public List<AcademicUnitResult> getAllAcademicUnitByUser(UUID userId) {
+        return academicUnitPort.getAllByUserId(new User.Id(userId)).stream()
+                .map(AcademicUnitResult::from)
+                .toList();
+    }
+
+    @Override
     public List<AcademicUnitResult> getAcademicUnitTimeline(UUID timelineSharedId) {
         var now = LocalDateTime.now();
         return academicUnitPort.getTimelineOfSnapshot(new Timeline.SharedId(timelineSharedId), now).stream()

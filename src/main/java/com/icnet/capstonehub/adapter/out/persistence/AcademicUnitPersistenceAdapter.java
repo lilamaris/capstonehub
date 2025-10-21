@@ -11,6 +11,7 @@ import com.icnet.capstonehub.application.port.out.AcademicUnitPort;
 import com.icnet.capstonehub.domain.model.AcademicUnit;
 import com.icnet.capstonehub.domain.model.Edition;
 import com.icnet.capstonehub.domain.model.Timeline;
+import com.icnet.capstonehub.domain.model.User;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +27,13 @@ import java.util.UUID;
 public class AcademicUnitPersistenceAdapter implements AcademicUnitPort {
     private final EntityManager em;
     private final AcademicUnitRepository academicUnitRepository;
+
+    @Override
+    public List<AcademicUnit> getAllByUserId(User.Id userId) {
+        return academicUnitRepository.findAllByUserId(userId.value()).stream()
+                .map(AcademicUnitEntityMapper::toDomain)
+                .toList();
+    }
 
     @Override
     public Optional<AcademicUnit> getSnapshotOfRecord(Timeline.SharedId timelineSharedId, Edition.SharedId editionSharedId, LocalDateTime txAt) {

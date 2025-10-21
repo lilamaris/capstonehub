@@ -16,6 +16,17 @@ public interface AcademicUnitRepository extends JpaRepository<AcademicUnitEntity
     @Query("""
             SELECT a
             FROM AcademicUnitEntity a
+            LEFT JOIN FETCH a.edition e
+            LEFT JOIN FETCH a.timeline t
+            WHERE t.scope = com.icnet.capstonehub.domain.model.Timeline.Scope.AFFILIATION
+                AND a.createdBy = :userId""")
+    List<AcademicUnitEntity> findAllByUserId(
+            @Param("userId") UUID userId
+    );
+
+    @Query("""
+            SELECT a
+            FROM AcademicUnitEntity a
             LEFT JOIN FETCH a.edition v
             LEFT JOIN FETCH a.timeline l
             WHERE l.scope = com.icnet.capstonehub.domain.model.Timeline.Scope.AFFILIATION
