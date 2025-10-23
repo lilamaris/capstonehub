@@ -20,10 +20,6 @@ public class TimelineEntity extends AuditableEntity {
     @Column(name = "shared_id", nullable = false, updatable = false)
     private UUID sharedId;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "scope", nullable = false, updatable = false)
-    private Timeline.Scope scope;
-
     @Column(name = "valid_from", nullable = false)
     private LocalDateTime validFrom;
 

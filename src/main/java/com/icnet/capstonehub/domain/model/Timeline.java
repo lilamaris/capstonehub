@@ -9,21 +9,25 @@ import java.util.UUID;
 public record Timeline(
         Id id,
         SharedId sharedId,
-        Scope scope,
         Period validPeriod
 ) {
-    public record Id(UUID value) {}
-    public record SharedId(UUID value) {}
-    public enum Scope { AFFILIATION, COURSE }
-
+    public record Id(UUID value) {
+        public static Id from(UUID value) {
+            return new Id(value);
+        }
+    }
+    public record SharedId(UUID value) {
+        public static SharedId from(UUID value) {
+            return new SharedId(value);
+        }
+    }
     public record Transition(Timeline previous, Timeline next) {}
 
-    public static Timeline initial(Scope scope, LocalDateTime validFrom) {
+    public static Timeline initial(LocalDateTime validFrom) {
         var sharedId = new SharedId(UUID.randomUUID());
         var validPeriod = Period.fromToMax(validFrom);
         return Timeline.builder()
                 .sharedId(sharedId)
-                .scope(scope)
                 .validPeriod(validPeriod)
                 .build();
     }

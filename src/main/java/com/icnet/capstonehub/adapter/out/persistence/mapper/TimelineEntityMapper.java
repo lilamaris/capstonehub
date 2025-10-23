@@ -16,7 +16,6 @@ public class TimelineEntityMapper {
         return TimelineEntity.builder()
                 .id(id)
                 .sharedId(domain.sharedId().value())
-                .scope(domain.scope())
                 .validFrom(domain.validPeriod().from())
                 .validTo(domain.validPeriod().to())
                 .build();
@@ -29,7 +28,6 @@ public class TimelineEntityMapper {
         return Timeline.builder()
                 .id(id)
                 .sharedId(sharedId)
-                .scope(entity.getScope())
                 .validPeriod(validPeriod)
                 .build();
     }

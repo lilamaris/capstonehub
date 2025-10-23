@@ -18,7 +18,6 @@ public record TimelineResult(
         return TimelineResult.builder()
                 .id(domain.id().value())
                 .sharedId(domain.sharedId().value())
-                .scope(domain.scope().name())
                 .validFrom(domain.validPeriod().from())
                 .validTo(domain.validPeriod().to())
                 .build();
