@@ -25,7 +25,7 @@ public record AcademicUnit(
         return AcademicUnit.builder()
                 .id(id)
                 .edition(Edition.initial(txAt))
-                .timeline(Timeline.initial(Timeline.Scope.AFFILIATION, validAt))
+                .timeline(Timeline.initial(validAt))
                 .facultyId(facultyId)
                 .departmentId(departmentId)
                 .build();

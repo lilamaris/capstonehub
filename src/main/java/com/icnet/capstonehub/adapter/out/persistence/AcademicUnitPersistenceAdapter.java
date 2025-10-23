@@ -7,7 +7,7 @@ import com.icnet.capstonehub.adapter.out.persistence.mapper.EditionEntityMapper;
 import com.icnet.capstonehub.adapter.out.persistence.repository.AcademicUnitRepository;
 import com.icnet.capstonehub.application.port.out.AcademicUnitPort;
 import com.icnet.capstonehub.domain.model.AcademicUnit;
-import com.icnet.capstonehub.domain.model.Edition;
+import com.icnet.capstonehub.domain.model.Period;
 import com.icnet.capstonehub.domain.model.Timeline;
 import com.icnet.capstonehub.domain.model.User;
 import jakarta.persistence.EntityManager;
@@ -26,43 +26,28 @@ public class AcademicUnitPersistenceAdapter implements AcademicUnitPort {
     private final AcademicUnitRepository academicUnitRepository;
 
     @Override
+    public Optional<AcademicUnit> getById(AcademicUnit.Id id) {
+        return academicUnitRepository.findById(id.value()).map(AcademicUnitEntityMapper::toDomain);
+    }
+
+    @Override
     public List<AcademicUnit> getAllByUserId(User.Id userId) {
-        return academicUnitRepository.findAllByUserId(userId.value()).stream()
-                .map(AcademicUnitEntityMapper::toDomain)
-                .toList();
+        return academicUnitRepository.findAllByUserId(userId.value()).stream().map(AcademicUnitEntityMapper::toDomain).toList();
     }
 
     @Override
-    public Optional<AcademicUnit> getSnapshotOfRecord(Timeline.SharedId timelineSharedId, Edition.SharedId editionSharedId, LocalDateTime txAt) {
-        return academicUnitRepository.findSnapshotOfRecord(timelineSharedId.value(), editionSharedId.value(), txAt)
-                .map(AcademicUnitEntityMapper::toDomain);
+    public List<AcademicUnit> getTimeline(Timeline.SharedId sharedId) {
+        return academicUnitRepository.findTimeline(sharedId.value()).stream().map(AcademicUnitEntityMapper::toDomain).toList();
     }
 
     @Override
-    public Optional<AcademicUnit> getSnapshotOfRecord(Timeline.SharedId timelineSharedId, LocalDateTime validAt, LocalDateTime txAt) {
-        return academicUnitRepository.findSnapshotOfRecord(timelineSharedId.value(), validAt, txAt)
-                .map(AcademicUnitEntityMapper::toDomain);
+    public Optional<AcademicUnit> getHeadOfTimeline(Timeline.SharedId sharedId) {
+        return academicUnitRepository.findHeadOfTimeline(sharedId.value(), Period.MAX_TIME).map(AcademicUnitEntityMapper::toDomain);
     }
 
     @Override
-    public List<AcademicUnit> getTimelineOfSnapshot(Timeline.SharedId timelineSharedId, LocalDateTime txAt) {
-        return academicUnitRepository.findTimelineOfSnapshot(timelineSharedId.value(), txAt).stream()
-                .map(AcademicUnitEntityMapper::toDomain)
-                .toList();
-    }
-
-    @Override
-    public List<AcademicUnit> getEditionOfRecord(Timeline.SharedId timelineSharedId, Edition.SharedId editionSharedId) {
-        return academicUnitRepository.findEditionOfRecord(timelineSharedId.value(), editionSharedId.value()).stream()
-                .map(AcademicUnitEntityMapper::toDomain)
-                .toList();
-    }
-
-    @Override
-    public List<AcademicUnit> getEditionOfRecord(Timeline.SharedId timelineSharedId, LocalDateTime validAt) {
-        return academicUnitRepository.findEditionOfRecord(timelineSharedId.value(), validAt).stream()
-                .map(AcademicUnitEntityMapper::toDomain)
-                .toList();
+    public List<AcademicUnit> getSnapshot(Timeline.SharedId sharedId, LocalDateTime txAt) {
+        return academicUnitRepository.findSnapshot(sharedId.value(), txAt).stream().map(AcademicUnitEntityMapper::toDomain).toList();
     }
 
     @Override

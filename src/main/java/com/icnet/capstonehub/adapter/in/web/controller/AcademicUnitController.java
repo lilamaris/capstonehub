@@ -4,16 +4,19 @@ import com.icnet.capstonehub.adapter.in.security.model.SecurityUser;
 import com.icnet.capstonehub.adapter.in.web.request.AcademicUnitCreateTimelineRequest;
 import com.icnet.capstonehub.adapter.in.web.request.AcademicUnitAmendTimelineRequest;
 import com.icnet.capstonehub.adapter.in.web.response.AcademicUnitResponse;
-import com.icnet.capstonehub.application.port.in.AcademicUnitUseCase;
+import com.icnet.capstonehub.application.port.in.AcademicUnitCommandUseCase;
+import com.icnet.capstonehub.application.port.in.AcademicUnitQueryUseCase;
 import com.icnet.capstonehub.application.port.in.command.AcademicUnitAmendTimelineCommand;
 import com.icnet.capstonehub.application.port.in.command.AcademicUnitAppendTimelineCommand;
 import com.icnet.capstonehub.application.port.in.command.AcademicUnitInitialTimelineCommand;
+import com.icnet.capstonehub.domain.model.Timeline;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -22,29 +25,42 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/academicUnit")
 public class AcademicUnitController {
-    private final AcademicUnitUseCase academicUnitUseCase;
+    private final AcademicUnitCommandUseCase commandUseCase;
+    private final AcademicUnitQueryUseCase queryUseCase;
 
     @GetMapping()
-    public ResponseEntity<List<AcademicUnitResponse>> getAllByUserId(
+    public ResponseEntity<List<AcademicUnitResponse.Query>> getAllByUserId(
             Authentication authentication
     ) {
         SecurityUser user = (SecurityUser) authentication.getPrincipal();
-        List<AcademicUnitResponse> response = academicUnitUseCase.getAllAcademicUnitByUser(user.getUser().id()).stream()
-                .map(AcademicUnitResponse::from).toList();
+        var response = queryUseCase.getOwned(user.getUser().id()).stream()
+                .map(AcademicUnitResponse.Query::from).toList();
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/timeline/{timelineId}")
-    public ResponseEntity<List<AcademicUnitResponse>> getAcademicUnitTimeline(
-            @PathVariable("timelineId") UUID timelineId
+    @GetMapping("/timeline/shared/{timelineSharedId}")
+    public ResponseEntity<List<AcademicUnitResponse.Query>> getAcademicUnitTimeline(
+            @PathVariable("timelineSharedId") UUID timelineSharedId
     ) {
-        List<AcademicUnitResponse> response = academicUnitUseCase.getAcademicUnitTimeline(timelineId).stream()
-                .map(AcademicUnitResponse::from).toList();
+        var id = Timeline.SharedId.from(timelineSharedId);
+        var response = queryUseCase.getTimeline(id).stream()
+                .map(AcademicUnitResponse.Query::from).toList();
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/timeline/shared/{timelineSharedId}/snapshot/{txAt}")
+    public ResponseEntity<List<AcademicUnitResponse.Query>> getSnapshot(
+            @PathVariable("timelineSharedId") UUID timelineSharedId,
+            @PathVariable("txAt") LocalDateTime txAt
+    ) {
+        var id = Timeline.SharedId.from(timelineSharedId);
+        var response = queryUseCase.getSnapshot(id, txAt).stream()
+                .map(AcademicUnitResponse.Query::from).toList();
         return ResponseEntity.ok(response);
     }
 
     @PostMapping("/timeline")
-    public ResponseEntity<AcademicUnitResponse> createAcademicUnitTimeline(
+    public ResponseEntity<AcademicUnitResponse.Command> createAcademicUnitTimeline(
             @RequestBody AcademicUnitCreateTimelineRequest request
     ) {
         log.info("""
@@ -57,7 +73,7 @@ public class AcademicUnitController {
                 .validAt(request.validAt())
                 .build();
 
-        var response = AcademicUnitResponse.from(academicUnitUseCase.initialAcademicUnitTimeline(command));
+        var response = AcademicUnitResponse.Command.from(commandUseCase.initialTimeline(command));
 
         log.info("""
                 [Controller] Initialize academicUnit timeline local variables
@@ -66,8 +82,8 @@ public class AcademicUnitController {
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/timeline/{timelineSharedId}")
-    public ResponseEntity<AcademicUnitResponse> appendAcademicUnitTimeline(
+    @PostMapping("/timeline/shared/{timelineSharedId}")
+    public ResponseEntity<AcademicUnitResponse.Command> appendAcademicUnitTimeline(
             @PathVariable("timelineSharedId") UUID timelineSharedId,
             @RequestBody AcademicUnitCreateTimelineRequest request
     ) {
@@ -83,7 +99,7 @@ public class AcademicUnitController {
                 .validAt(request.validAt())
                 .build();
 
-        AcademicUnitResponse response = AcademicUnitResponse.from(academicUnitUseCase.appendAcademicUnitTimeline(command));
+        var response = AcademicUnitResponse.Command.from(commandUseCase.appendTimeline(command));
 
         log.info("""
                 [Controller] Assign academicUnit timeline local variables
@@ -92,8 +108,8 @@ public class AcademicUnitController {
         return ResponseEntity.ok(response);
     }
 
-    @PutMapping("/timeline/{timelineSharedId}/edition/{editionSharedId}")
-    public ResponseEntity<AcademicUnitResponse> amendAcademicUnitTimeline(
+    @PutMapping("/timeline/shared/{timelineSharedId}/edition/shared/{editionSharedId}")
+    public ResponseEntity<AcademicUnitResponse.Command> amendAcademicUnitTimeline(
             @PathVariable("timelineSharedId") UUID timelineSharedId,
             @PathVariable("editionSharedId") UUID editionSharedId,
             @RequestBody AcademicUnitAmendTimelineRequest request
@@ -111,7 +127,7 @@ public class AcademicUnitController {
                 .editionDescription(request.editionDescription())
                 .build();
 
-        AcademicUnitResponse response = AcademicUnitResponse.from(academicUnitUseCase.amendAcademicUnitTimeline(command));
+        var response = AcademicUnitResponse.Command.from(commandUseCase.amendTimeline(command));
 
         log.info("""
                 [Controller] Amend academicUnit timeline local variables
