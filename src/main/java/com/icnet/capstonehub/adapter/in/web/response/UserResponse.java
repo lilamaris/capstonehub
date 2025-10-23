@@ -14,7 +14,7 @@ public record UserResponse (
 ) {
     public static UserResponse from(UserResult result) {
         return UserResponse.builder()
-                .id(result.id())
+                .id(result.id().value())
                 .name(result.name())
                 .email(result.email())
                 .role(result.role())

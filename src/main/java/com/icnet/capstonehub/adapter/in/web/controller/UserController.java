@@ -1,5 +1,6 @@
 package com.icnet.capstonehub.adapter.in.web.controller;
 
+import com.icnet.capstonehub.adapter.in.security.model.SecurityUser;
 import com.icnet.capstonehub.adapter.in.web.response.UserResponse;
 import com.icnet.capstonehub.application.port.in.UserUseCase;
 import lombok.RequiredArgsConstructor;
@@ -29,9 +30,9 @@ public class UserController {
         return Optional.ofNullable(auth)
                 .filter(Authentication::isAuthenticated)
                 .map(Authentication::getPrincipal)
-                .map(String.class::cast)
-                .map(email -> {
-                    var response = UserResponse.from(userUseCase.getByEmail(email));
+                .map(SecurityUser.class::cast)
+                .map(user -> {
+                    var response = UserResponse.from(userUseCase.getByEmail(user.getUsername()));
                     return ResponseEntity.ok(response);
                 })
                 .orElse(ResponseEntity.badRequest().build());
