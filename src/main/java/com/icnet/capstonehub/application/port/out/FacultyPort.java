@@ -7,6 +7,7 @@ import java.util.Optional;
 
 public interface FacultyPort {
     List<Faculty> getAll();
+    List<Faculty> getAll(List<Faculty.Id> ids);
     Optional<Faculty> get(Faculty.Id id);
     Faculty save(Faculty faculty);
 }

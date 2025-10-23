@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 
 public record Period(LocalDateTime from, LocalDateTime to) {
-    private static final LocalDateTime MAX_TIME = LocalDateTime.of(9999, 12, 31, 23, 59, 59);
+    public static final LocalDateTime MAX_TIME = LocalDateTime.of(9999, 12, 31, 23, 59, 59);
     public record Split(Period previous, Period next) {}
 
     @Builder

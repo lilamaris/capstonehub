@@ -4,6 +4,7 @@ import com.icnet.capstonehub.adapter.out.persistence.entity.FacultyEntity;
 import com.icnet.capstonehub.adapter.out.persistence.mapper.FacultyEntityMapper;
 import com.icnet.capstonehub.application.port.out.FacultyPort;
 import com.icnet.capstonehub.domain.model.Faculty;
+import com.icnet.capstonehub.domain.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -20,6 +21,11 @@ public interface FacultyRepository extends JpaRepository<FacultyEntity, UUID>, F
     @Override
     default Optional<Faculty> get(Faculty.Id id) {
         return findById(id.value()).map(FacultyEntityMapper::toDomain);
+    }
+
+    @Override
+    default List<Faculty> getAll(List<Faculty.Id> ids) {
+        return findAllById(ids.stream().map(Faculty.Id::value).toList()).stream().map(FacultyEntityMapper::toDomain).toList();
     }
 
     @Override

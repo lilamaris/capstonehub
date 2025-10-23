@@ -11,6 +11,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Repository
@@ -19,6 +20,12 @@ public interface TimelineRepository extends JpaRepository<TimelineEntity, UUID>,
     default Timeline save(Timeline domain) {
          return TimelineEntityMapper.toDomain(save(TimelineEntityMapper.toEntity(domain)));
     }
+
+    @Override
+    default Optional<Timeline> get(Timeline.Id id) {
+        return findById(id.value()).map(TimelineEntityMapper::toDomain);
+    }
+
     @Override
     default List<Timeline> getAll() {
         return findAll().stream()

@@ -13,8 +13,16 @@ public record Edition(
         String editionDescription,
         Period txPeriod
 ) {
-    public record Id(UUID value) {}
-    public record SharedId(UUID value) {}
+    public record Id(UUID value) {
+        public static Id from(UUID value) {
+            return new Id(value);
+        }
+    }
+    public record SharedId(UUID value) {
+        public static SharedId from(UUID value) {
+            return new SharedId(value);
+        }
+    }
 
     public record Transition(Edition previous, Edition next) {}
 
